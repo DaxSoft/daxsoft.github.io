@@ -18,7 +18,7 @@ function (core) {
      * @variable DIRECTORY
      * @description get the main directory pathname
      */
-    core.DIRECTORY = "http://localhost:3000/"
+    core.DIRECTORY = "https://daxsoft.github.io/"
     /**
      * @function isFunction
      * @description check up if is a function
