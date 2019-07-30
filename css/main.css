@@ -1,0 +1,643 @@
+/* ===========================================================================
+    * main.css
+    ? this handles with the main styles components, it's just to use as 
+    ? the standard/basic point.
+    ! use CTRL+F to search for each section
+        :body -> the whole body of the page 
+        :default -> default tags
+        :terminal -> terminal command style
+        @main -> content from 'main'
+        :button -> styles for buttons
+        :image - style for pictures
+        :animation -> some keyframe animation
+=========================================================================== */
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
+
+:root {
+    /*
+     * [colors]
+     ? the guideline of the color 
+    */
+    --color-background: #141414;
+    --color-background-light: #282828;
+    --color-background-dark: #101010;
+    --color-radial-background: radial-gradient(at 50% 50%, rgba(30, 30, 30, 0.5), rgba(14, 14, 14, 1));
+    --color-radial-background-2: radial-gradient(at 50% 50%, rgba(30, 30, 30, 1), rgba(14, 14, 14, 0.75));
+    --color-radial-background-3: radial-gradient(at 50% 100%, rgba(26, 14, 15, 0.75), rgba(14, 14, 14, 1));
+    --color-radial-background-4: radial-gradient(at -10% -10%, rgba(30, 30, 30, 0.75), rgba(14, 14, 14, 1));
+    --color-radial-reverse: radial-gradient(at -20% -20%, rgba(238, 238, 238, 0.9), at 50% 50% rgba(200, 200, 200, 1));
+    --color-reverse: #eee;
+    --color-emphasis: #e8e8e8;
+    --color-border: #565656;
+    --color-border-contrast: #727272;
+    --color-container: #282828;
+    --color-text: #e2e2e2;
+    --color-text-label: silver;
+    --color-text-paragraph: #faebd7;
+    --color-text-contrast: #EEB22D;
+    --color-system-error: #f95959;
+    --color-system-success: #6f9b53;
+    --color-system-warning: #e1a66d;
+    --color-system-information: #BAAD76;
+    --color-interactive: #D1AC56;
+    --color-hover: #CE911F;
+    --color-disabled: #9B555D;
+    /*
+     * [animation]
+     ? variables for the animation
+    */
+    --animation-duration-short: 0.25s;
+    --animation-duration-normal: 0.5s;
+    --animation-duration-long: 1s;
+    --animation-duration-long-b: 1.5s;
+    --animation_border-size: .2rem;
+    --animation_border-size-step: .1rem;
+    --animation-bluring-max: 2px;
+    /*
+     * [text] 
+     ? guideline for the text
+    */
+    --text-standard-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --text-standard-size: 1rem;
+    --text-paragraph-family: Verdana, Geneva, Tahoma, sans-serif;
+    --text-paragraph-size: 1.2rem;
+    --text-paragraph-height: 1.2;
+}
+
+/* =============================================================================================================
+    [:body] 
+=============================================================================================================  */
+html,
+body {
+    background: var(--color-radial-background-4);
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
+    padding: 0 auto;
+    color: var(--color-emphasis);
+    font-family: var(--text-standard-family);
+    font-size: var(--text-standard-size);
+    overflow-x: hidden;
+}
+
+/* =============================================================================================================
+    [:default] 
+=============================================================================================================  */
+p {
+    font-family: var(--text-paragraph-family);
+    color: var(--color-text-paragraph);
+    font-size: var(--text-paragraph-size);
+    max-width: 90vw;
+    line-height: var(--text-paragraph-height);
+    line-break: loose;
+    -webkit-line-break: loose;
+    -ms-line-break: loose;
+    text-align: center;
+    white-space: pre-line;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-interactive);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-hover);
+}
+
+
+::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--color-text-label);
+    opacity: 1;
+    /* Firefox */
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: var(--color-text-label);
+}
+
+::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: var(--color-text-label);
+}
+
+#social-media {
+    display: grid;
+    grid-template-columns: repeat(5, 32px);
+    grid-auto-rows: auto;
+    grid-gap: .5rem;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+}
+
+
+#social-media-icon {
+    display: block;
+    justify-self: center;
+    width: 28px;
+    height: 28px;
+    transition: .4s ease-in;
+    background-size: 28px 28px;
+}
+
+
+#social-media-icon:hover {
+    animation: brightness-pingpong var(--animation-duration-normal) forwards ease-in;
+}
+
+a {
+    color: var(--color-interactive);
+    padding: .25em;
+    text-decoration: none;
+    
+}
+
+a:hover {
+    animation: opacity-pingpong var(--animation-duration-long) infinite ease-in-out;
+}
+
+hr {
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+
+label {
+    padding-top: 6px;
+    font-family: 'Open Sans';
+    font-size: .75rem;
+    text-transform: uppercase;
+    color: var(--color-emphasis);
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+/* =============================================================================================================
+    [:terminal] 
+=============================================================================================================  */
+terminal.landscape {
+    display: block;
+    position: fixed !important;
+    z-index: 999;
+    max-width: 80vw;
+    transform: translate(-50%, -50%);
+    top: 2em;
+    left: 50%;
+}
+
+terminal.portrait {
+    display: block;
+    position: fixed !important;
+    z-index: 999;
+    max-width: 80vw;
+    transform: translate(-50%, -50%);
+    top: 2em;
+    left: 50%;
+}
+
+#terminal-search {
+    outline: none;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 1px;
+    border-radius: 12px;
+    background: var(--color-radial-background-4);
+    padding: .65em;
+    color: var(--color-emphasis);
+    width: 75vw;
+    transition: .4s ease-in;
+}
+
+#terminal-search:hover,
+#terminal-search:focus {
+    border-color: var(--color-hover);
+}
+
+
+.overlay {
+    height: 0%;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 900;
+    transition: .4s ease-in;
+    background: var(--color-radial-background-2);
+}
+
+#terminal-overlay-content.landscape {
+    padding: 4em 2em;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: auto;
+    grid-auto-rows: 1em;
+    grid-gap: 1rem;
+    justify-self: center;
+}
+
+#terminal-overlay-content.portrait {
+    padding: 4em 1em;
+    position: absolute;
+    width: 90vw;
+    height: 100%;
+    display: grid;
+    grid-template-columns: auto;
+    grid-auto-rows: 2em;
+    grid-gap: .5em;
+    justify-self: center;
+}
+
+#terminal-overlay-command {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-auto-rows: auto;
+    grid-gap: 2em;
+    font-size: .75rem;
+    justify-content: left;
+    
+
+}
+
+.global {
+    color: var(--color-system-warning);
+    font-size: .75rem;
+    white-space: nowrap;
+    font-weight: bold;
+    text-transform: none;
+    padding: 0;
+    letter-spacing: 0;
+    text-align: left;
+}
+
+.eval {
+    color: var(--color-system-information);
+    font-size: .75rem;
+    white-space: nowrap;
+    font-weight: bold;
+    text-transform: none;
+    padding: 0;
+    letter-spacing: 0;
+    text-align: left;
+}
+
+.error {
+    color: var(--color-system-error);
+    font-size: .75rem;
+    white-space: nowrap;
+    font-weight: bold;
+    text-transform: none;
+    padding: 0;
+    letter-spacing: 0;
+    text-align: left;
+}
+/* =============================================================================================================
+    [:@main] 
+=============================================================================================================  */
+#content.landscape > #main-author {
+    display: grid;
+    justify-content: left;
+    margin-top: 3.5em;
+    padding: 1em;
+    grid-auto-columns: auto;
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+    max-width: 30vw;
+}
+
+#content.portrait > #main-author {
+    display: grid;
+    justify-content: left;
+    margin-top: 3.5em;
+    padding: 1em;
+    grid-auto-columns: auto;
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+    max-width: 90vw;
+}
+
+#main-author-photo {
+    display: block;
+    justify-self: center;
+    border-radius: 50%;
+    width: 128px;
+}
+
+#main-author-about {
+    padding: 0 2.5em;
+    font-size: 1.1rem;
+}
+
+
+#content.landscape > #recent-work {
+    display: grid;
+    grid-template-rows: 3em 1fr 3em 2em;
+    grid-auto-columns: auto;
+    grid-gap: 2em;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+    margin-top: 3.5em;
+}
+
+#content.portrait > #recent-work {
+    display: grid;
+    grid-auto-rows: auto;
+    grid-auto-columns: auto;
+    grid-gap: 1em;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+    margin-top: 3.5em;
+}
+
+
+
+#recent-work-titlename {
+    font-family: 'Open Sans';
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-text-contrast);
+}
+
+#content.landscape > #recent-work > #recent-work-media {
+    display: grid;
+    grid-template-columns: repeat(3, 256px);
+    grid-auto-rows: 164px;
+    grid-gap: 1em;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+}
+
+#content.portrait > #recent-work > #recent-work-media {
+    display: grid;
+    grid-auto-columns: 256px;
+    grid-auto-rows: 164px;
+    grid-gap: 1em;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+}
+
+#recent-work-media>img {
+    display: block;
+    width: 256px;
+    height: 164px;
+    object-fit: cover;
+}
+
+#recent-work-description {
+    font-size: .75rem;
+    padding: 0 3em;
+    text-align: center;
+}
+
+#recent-work-link {
+    display: grid;
+    grid-auto-columns: 48px;
+    grid-auto-rows: 48px;
+    grid-auto-flow: column;
+    justify-content: center;
+    justify-self: center;
+    transition: .4s ease-in;
+}
+
+
+
+#recent-work-link>a:hover {
+    animation: brightness-pingpong var(--animation-duration-normal) forwards ease-in;
+}
+
+#recent-work-link-img {
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+
+/* =============================================================================================================
+    [:@about] 
+=============================================================================================================  */
+#content.landscape > #what-do {
+    display: grid;
+    justify-content: left;
+    margin-top: 7em;
+    padding: 1em;
+    grid-auto-columns: auto;
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+}
+
+#content.portrait > #what-do {
+    display: grid;
+    justify-content: left;
+    margin-top: 1em;
+    padding: 1em;
+    grid-auto-columns: auto;
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+}
+
+#what-do-text {
+    font-size: 1rem;
+    text-align: left;
+    padding: 1em;
+}
+
+#content.landscape > #tools {
+    display: grid;
+    justify-content: center;
+    margin-top: 3.5em;
+    padding: 1em;
+    grid-auto-columns: auto;
+    grid-auto-rows: auto;
+    grid-gap: 1em;
+}
+
+#content.portrait > #tools {
+    display: grid;
+    justify-content: center;
+    padding-bottom: 2em;
+    grid-auto-columns: auto;
+    grid-auto-rows: auto;
+    grid-gap: 1em;
+}
+
+
+#tools > label {
+    text-align: center !important;
+}
+
+.tool-icon {
+    display: grid;
+    grid-template-columns: repeat(3, 32px);
+    grid-auto-rows: auto;
+    grid-gap: .5rem;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+}
+
+
+.tool-icon > img {
+    display: block;
+    justify-self: center;
+    width: 32px;
+    height: 32px;
+    transition: .4s ease-in;
+}
+
+
+.tool-icon > img:hover {
+    animation: brightness-pingpong var(--animation-duration-normal) forwards ease-in;
+}
+
+/* =============================================================================================================
+    [:content] 
+=============================================================================================================  */
+#content.landscape {
+    display: grid;
+    grid-template-columns: auto;
+    grid-auto-rows: auto;
+    grid-gap: 1rem;
+    justify-self: center;
+}
+
+
+#content.landscape.about {
+    grid-template-columns: 1fr 1fr 1fr !important;
+}
+
+#content.portrait {
+    display: grid;
+    grid-auto-columns: auto;
+    grid-auto-rows: auto;
+    grid-gap: 1em;
+    justify-self: center;
+}
+
+
+/* =============================================================================================================
+    [:button] 
+=============================================================================================================  */
+
+/* =============================================================================================================
+    [:animation] 
+=============================================================================================================  */
+
+/* .............................................................................................................
+    * [:letter-spacing] 
+    ? animation: letter-spacing var(--animation-duration-normal) forwards cubic-bezier(0.86, 0, 0.07, 1);
+.............................................................................................................  */
+@keyframes letter-spacing {
+    from {
+        letter-spacing: 16px;
+    }
+
+    to {
+        letter-spacing: 0.4rem;
+    }
+}
+
+/* .............................................................................................................
+    * [:letter-spacing-big]  
+    ? animation: letter-spacing-big var(--animation-duration-normal) forwards cubic-bezier(0.86, 0, 0.07, 1);
+.............................................................................................................  */
+@keyframes letter-spacing-big {
+    from {
+        letter-spacing: 1024px;
+    }
+
+    to {
+        letter-spacing: 16px;
+    }
+}
+
+/* .............................................................................................................
+    * [:letter-spacing-small] 
+    ? animation: letter-spacing-small var(--animation-duration-normal) forwards cubic-bezier(0.86, 0, 0.07, 1);
+.............................................................................................................  */
+@keyframes letter-spacing-small {
+    from {
+        letter-spacing: 8px;
+    }
+
+    to {
+        letter-spacing: 1px;
+    }
+}
+
+/* .............................................................................................................
+    * [:brightness-pingpong] | 
+    ? animation: brightness-pingpong var(--animation-duration-normal) forwards ease-in;
+.............................................................................................................  */
+@keyframes brightness-pingpong {
+    from {
+        filter: brightness(0);
+    }
+
+    to {
+        filter: brightness(-1);
+    }
+}
+
+/* .............................................................................................................
+    * [:short-press]  
+    ? animation: short-press var(--animation-duration-long) forwards ease-in;
+.............................................................................................................  */
+@keyframes short-press {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(.9);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* .............................................................................................................
+    * [:opacity-pingpong]  
+    ? animation: opacity-pingpong var(--animation-duration-long) infinite ease-in-out;
+.............................................................................................................  */
+@keyframes opacity-pingpong {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* .............................................................................................................
+    * [:opacity-out]  
+    ? animation: opacity-out var(--animation-duration-normal) forwards ease-in-out;
+.............................................................................................................  */
+@keyframes opacity-out {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "lang": "en",
+    "content": {
+        "main": "content/main.html",
+        "about": "content/about.html"
+    }
+}

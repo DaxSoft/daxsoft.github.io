@@ -1,0 +1,36 @@
+:root {
+    --color-background: #e2e2e2;
+    --color-background-light: #ffffff;
+    --color-background-dark: #bebebe;
+    --color-radial-background: radial-gradient(at 50% 50%, rgba(220, 220, 220, 0.5), rgba(240, 240, 240, 1));
+    --color-radial-background-2: radial-gradient(at 50% 50%, rgba(220, 220, 220, 1), rgba(240, 240, 240, 0.75));
+    --color-radial-background-3: radial-gradient(at 20% 50%, rgba(202, 182, 182, 0.75), rgba(240, 240, 240, 1));
+    --color-radial-background-4: radial-gradient(at -10% -10%, rgba(220, 220, 220, 0.9), rgba(240, 240, 240, 1));
+    --color-radial-reverse: radial-gradient(at 50% 50%, rgba(30, 30, 30, 0.5), rgba(14, 14, 14, 1));
+
+    --color-reverse: #141414;
+    --color-emphasis: #171717;
+    --color-border: #565656;
+    --color-border-contrast: #727272;
+    --color-container: #282828;
+    --color-text: #171717;
+    --color-text-label: #303030;
+    --color-text-paragraph: #282828;
+    --color-text-contrast: #807362;
+    --color-system-error: #f95959;
+    --color-system-success: #6f9b53;
+    --color-system-warning: #A25C43;
+    --color-system-information: #BAAD76;
+    --color-interactive: #B8A18F;
+    --color-hover: #CE911F;
+    --color-disabled: #9B555D;
+}
+
+
+#terminal-search {
+    background: var(--color-radial-background-2);
+}
+
+.overlay {
+    background: var(--color-radial-background-4);
+}
