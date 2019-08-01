@@ -321,6 +321,9 @@ function (element) {
         "sql": Core.dir("img/icon/sql.png"),
         "nodejs": Core.dir("img/icon/nodejs.png"),
         "ai": Core.dir("img/icon/ai.png"),
+        "pixijs": Core.dir("img/icon/pixijs.png"),
+        "electron": Core.dir("img/icon/electron.png"),
+        "rpgmakermv": Core.dir("img/icon/rpgmakermv.png")
     }
 }(El);
 
@@ -506,7 +509,11 @@ function (page) {
             localStorage.setItem("theme", "#")
             document.location.reload();
             return true;
-        }
+        } else if (/^\s?(golden)/gim.test(value)) {
+            localStorage.setItem("theme", Core.dir("css/theme.golden.css"))
+            document.location.reload();
+            return true;
+        } 
 
         return false;
     }

@@ -1,0 +1,36 @@
+:root {
+    --color-background: #9a8b65;
+    --color-background-light: #a39676;
+    --color-background-dark: #8b754b;
+    --color-radial-background: radial-gradient(at 50% 50%, rgba(184, 165, 97, 0.5), rgba(206, 195, 155, 1));
+    --color-radial-background-2: radial-gradient(at 50% 50%, rgba(206, 195, 155, 1), rgba(184, 165, 97, 0.75));
+    --color-radial-background-3: radial-gradient(at 20% 50%, rgba(184, 165, 97, 0.75), rgba(206, 195, 155, 1));
+    --color-radial-background-4: radial-gradient(at -10% -10%, rgba(158, 145, 114, 0.9), rgba(154, 139, 101, 1));
+    --color-radial-reverse: radial-gradient(at 50% 50%, rgba(30, 30, 30, 0.5), rgba(14, 14, 14, 1));
+
+    --color-reverse: #141414;
+    --color-emphasis: whitesmoke;
+    --color-border: #565656;
+    --color-border-contrast: #727272;
+    --color-container: #282828;
+    --color-text: #F1E9BC;
+    --color-text-label: #F1E9BC;
+    --color-text-paragraph: #F1E9BC;
+    --color-text-contrast: #614642;
+    --color-system-error: #925C38;
+    --color-system-success: #6f9b53;
+    --color-system-warning: rgb(56, 39, 36);
+    --color-system-information: #BAAD76;
+    --color-interactive: #141414;
+    --color-hover: #614642;
+    --color-disabled: #48423A;
+}
+
+
+#terminal-search {
+    background: var(--color-background-dark);
+}
+
+.overlay {
+    background: var(--color-radial-background-4);
+}

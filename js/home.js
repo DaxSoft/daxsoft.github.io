@@ -64,7 +64,7 @@ function (index) {
 
     async function setup_localStorage() {
         if (!localStorage.getItem('lang')) localStorage.setItem('lang', index.data.lang);
-        if (!localStorage.getItem('current-content')) localStorage.setItem('current-content', 'main');
+        if (!localStorage.getItem('current-content')) localStorage.setItem('current-content', 'about');
         if (!localStorage.getItem("content-class")) localStorage.setItem("content-class", "")
         if (!localStorage.getItem("theme")) localStorage.setItem("theme", "#")
     }
@@ -165,26 +165,143 @@ function (index) {
         if (El.is(tools)) {
             const front_end = El.id("front-end");
             ["javascript", "html5", "css", "ruby", "analytics"].forEach(name => {
-                El.Attr(El.create("img", front_end), {
+                let icon = El.Attr(El.create("img", front_end), {
                     "alt": "front end tool",
                     "src": El.icon[name]
                 })
+
+                let front_end_description = {
+                    "javascript": {
+                        "en": "Language of Programmation: Javascript",
+                        "pt": "Linguagem de Programação: Javascript"
+                    },
+
+                    "html5": {
+                        "en": "Markup Language: HTML5",
+                        "pt": "Linguagem de Marcação: HTML5"
+                    },
+
+                    "css": {
+                        "en": "Cascading Style Sheets 3",
+                        "pt": "Cascading Style Sheets 3"
+                    },
+
+                    "ruby": {
+                        "en": "Language of Programmation: Ruby",
+                        "pt": "Linguagem de Programação: Ruby"
+                    },
+
+                    "analytics": {
+                        "en": "Tool: Google Analytics",
+                        "pt": "Ferramenta: Google Analytics"
+                    }
+                }
+
+                icon.onclick = () => {
+                    Popup.on({
+                        "class": "popup-info",
+                        "duration": 1500,
+                        "position": "center bottom",
+                        "text": front_end_description[name][localStorage.getItem('lang')]
+                    })
+                }
             })
 
             const back_end = El.id("back-end");
             ["php", "sql", "nodejs"].forEach(name => {
-                El.Attr(El.create("img", back_end), {
-                    "alt": "front end tool",
+                let icon = El.Attr(El.create("img", back_end), {
+                    "alt": "back end tool",
                     "src": El.icon[name]
                 })
+
+                let back_end_description = {
+                    "php": {
+                        "en": "Language of Programmation: PHP",
+                        "pt": "Linguagem de Programação: PHP"
+                    },
+
+                    "sql": {
+                        "en": "Structured Query Language: SQL",
+                        "pt": "Linguagem de Consulta Estruturada: SQL"
+                    },
+
+                    "nodejs": {
+                        "en": "Run-time: NodeJS",
+                        "pt": "Run-time: NodeJS"
+                    }
+                }
+
+                icon.onclick = () => {
+                    Popup.on({
+                        "class": "popup-info",
+                        "duration": 1500,
+                        "position": "center bottom",
+                        "text": back_end_description[name][localStorage.getItem('lang')]
+                    })
+                }
             })
 
             const design = El.id("tool-design");
             ["psd", "ai"].forEach(name => {
-                El.Attr(El.create("img", design), {
-                    "alt": "front end tool",
+                let icon = El.Attr(El.create("img", design), {
+                    "alt": "design tool",
                     "src": El.icon[name]
                 })
+
+                let description = {
+                    "psd": {
+                        "en": "Adobe Photoshop",
+                        "pt": "Adobe Photoshop"
+                    },
+
+                    "ai": {
+                        "en": "Adobe Illustrator",
+                        "pt": "Adobe Illustrator"
+                    }
+                }
+
+                icon.onclick = () => {
+                    Popup.on({
+                        "class": "popup-info",
+                        "duration": 1500,
+                        "position": "center bottom",
+                        "text": description[name][localStorage.getItem('lang')]
+                    })
+                }
+            })
+
+            const framework_tools = El.id("framework-tool");
+            ["pixijs", "electron", "rpgmakermv"].forEach(name => {
+                let icon = El.Attr(El.create("img", framework_tools), {
+                    "alt": "framework & apps tool",
+                    "src": El.icon[name]
+                })
+
+                let description = {
+                    "pixijs": {
+                        "en": "JavaScript Framework: PixiJS",
+                        "pt": "JavaScript Framework: PixiJS"
+                    },
+
+                    "electron": {
+                        "en": "JavaScript Framework: ElectronJS",
+                        "pt": "JavaScript Framework: ElectronJS"
+                    },
+
+                    "rpgmakermv": {
+                        "en": "Game Engine: RPG Maker MV",
+                        "pt": "Engine de Jogos: RPG Maker MV"
+                    },
+                }
+
+                icon.onclick = () => {
+                    Popup.on({
+                        "class": "popup-info",
+                        "duration": 1500,
+                        "position": "center bottom",
+                        "text": description[name][localStorage.getItem('lang')]
+                    })
+                }
             })
         }
     }

@@ -58,5 +58,11 @@
         "label": "white",
         "description": "change to the white theme",
         "class": "global"
+    },
+
+    {
+        "label": "golden",
+        "description": "change to the golden theme",
+        "class": "global"
     }
 ]
