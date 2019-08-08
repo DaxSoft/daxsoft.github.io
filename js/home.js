@@ -64,7 +64,7 @@ function (index) {
 
     async function setup_localStorage() {
         if (!localStorage.getItem('lang')) localStorage.setItem('lang', index.data.lang);
-        if (!localStorage.getItem('current-content')) localStorage.setItem('current-content', 'about');
+        if (!localStorage.getItem('current-content')) localStorage.setItem('current-content', 'main');
         if (!localStorage.getItem("content-class")) localStorage.setItem("content-class", "")
         if (!localStorage.getItem("theme")) localStorage.setItem("theme", "#")
     }
