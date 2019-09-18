@@ -1,24 +1,45 @@
 'use strict';
+
 /**
  * @file core.js
- * @description this javascript file handles with some methods and functions
- * that will make more easy to handle with some objects and create some stuffs
+ * @description handles with main functions and methods that make more 
+ * easy to edit and create stuffs 
+ * 
+ * [CTRL+F]
+ *  :core
+ *  :el
+ *  :route
+ *  :page
+ */
+
+// ====================================================================
+
+/**
+ * @field :core
+ * @description general methods & functions to handle with some resources
  */
 var Core = {};
-Core.page = {};
-var El = {};
-/**
- * @description handles with the general functions & constants
- */
+
 void
 
 function (core) {
-    // =================================================================================
     /**
-     * @variable DIRECTORY
-     * @description get the main directory pathname
+     * @function invalid 
+     * @description check out if is undefined or null
      */
-    core.DIRECTORY = "https://daxsoft.github.io/"
+    core.invalid = function (object) {
+        return (typeof object === 'undefined') || (object === null)
+    }
+    /**
+     * @function join
+     * @description join up two path
+     */
+    core.join = function (str1, str2) {
+        str1 = str1.replace(/(\/)[(/)]/g, '/')
+        str2 = str2.replace(/(\/)[(/)]/g, '/')
+        str1 += "/" + str2;
+        return str1;
+    }
     /**
      * @function isFunction
      * @description check up if is a function
@@ -26,12 +47,17 @@ function (core) {
     core.isFunction = function (object) {
         return typeof object === 'function';
     }
-    // =================================================================================
     /**
      * @var ASPECT_RATION
      * @description aspect ration of the screen
      */
     core.ASPECT_RATION = [1, 1];
+    /**
+     * @var orientation
+     * @description to store values when the function is called
+     * @returns {Object}
+     */
+    core.orientation = {};
     /**
      * @function Core.device_orientation
      * @description check out the orientation of the device by checkin' up his 
@@ -44,28 +70,23 @@ function (core) {
         const width = (document.documentElement.clientWidth) * aspect_x;
         const height = (document.documentElement.clientHeight) * aspect_y;
         const orientation = (width > height ? 'landscape' : 'portrait');
-        return {
+        return core.orientation = {
             current: orientation,
             reverse: orientation === 'landscape' ? 'portrait' : 'landscape',
             percent: core.float(height / width)
         }
     }
     /**
-     * @function dir 
-     * @description gets the link following the original directory url
-     * @param {String} [path]
+     * @description get a random element from array
+     * @param {array} [array]
+     * @param {number} [at] (optional, default is 0) 
+     * at the element index until 'end'
+     * @param {number} [end] (optional, default is length) 
+     * until 'end' element index.
+     * @returns {Array}
      */
-    core.dir = function (path) {
-        return (core.DIRECTORY).concat(path);
-    }
-    /**
-     * @function lang
-     * @description get the filepath of the text 
-     * @param {String} [path]
-     */
-    core.lang = function (filename) {
-        let language = localStorage.getItem('lang') || "en";
-        return core.dir(`data/text/${language}/${filename}`);
+    core.array_random = function (array, at, end) {
+        return array[core.randInt((at || 0), (end || array.length) - 1)];
     }
     /**
      * @desc get a random numeric between a min and max value.
@@ -86,26 +107,13 @@ function (core) {
         return ~~(Math.random() * (max - min + 1)) + min;
     }
     /**
-     * @description get a random element from array
-     * @param {array} [array]
-     * @param {number} [at] (optional, default is 0) 
-     * at the element index until 'end'
-     * @param {number} [end] (optional, default is length) 
-     * until 'end' element index.
-     * @returns {Array}
-     */
-    core.array_random = function (array, at, end) {
-        return array[core.randInt((at || 0), (end || array.length) - 1)];
-    }
-    /**
-     * @function float
      * @description fix the float
      */
     core.float = (value, n = 2) => {
         return parseFloat(value.toFixed(n || 2));
     }
     /**
-     * @description clamping a  number
+     * @description clamping a float number
      * @param {Number} [current]
      * @param {Number} [min]
      * @param {Number} [max]
@@ -140,41 +148,20 @@ function (core) {
         current -= amount;
         return core.fclamp(current, min, max);
     }
-    /**
-     * @desc check out if the current value is odd
-     * @return {boolean}
-     */
-    core.isOdd = function () {
-        return (this & 1);
-    }
-    /**
-     * @desc check out if the current value is evan
-     * @return {boolean}
-     */
-    core.isEven = function () {
-        return !(this & 1);
-    }
-    /**
-     * @desc turn value to percent by max
-     * @param {number, number, number}
-     * @return {number}
-     */
-    core.percentTo = function (current, min, max) {
-        return ((current * min) / max);
-    }
-    /**
-     * @desc turn value to percent
-     * @param {number, number}
-     * @return {number}
-     */
-    core.toPercent = function (current, min) {
-        return ((current * min) / 100);
+
+    core.swap = function(arr, from, to)  {
+        arr.splice(from, 1, arr.splice(to, 1, arr[from])[0]);
     }
 }(Core);
 
+// ====================================================================
+
 /**
+ * @field :el
  * @description methods to work with document elements
  */
+var El = {};
+
 void
 
 function (element) {
@@ -187,12 +174,11 @@ function (element) {
      * then return back to the function as callback. Use this to create the element.
      * @returns {HTMLElement}
      */
-    element.id = function (el, fallback) {
+    element.id = function (el, fallback = null) {
         if (el instanceof HTMLElement) return el;
         const element = document.getElementById(String(el))
         if (!element && Core.isFunction(fallback)) {
             fallback.call(this, el);
-            element.id(el);
         }
         return element;
     }
@@ -203,6 +189,14 @@ function (element) {
      */
     element.is = function (el) {
         return (el instanceof HTMLElement);
+    }
+    /**
+     * @function isnt 
+     * @description check if the object isn't HTMLELement
+     * @returns {Boolean}
+     */
+    element.isnt = function (el) {
+        return !(el instanceof HTMLElement);
     }
     /**
      * @function create 
@@ -241,28 +235,25 @@ function (element) {
      * @returns {HTMLElement}
      */
     element.removeClass = function (el, className) {
-        el = element.id(el);
-
-        el.setAttribute("class", ((el.className.split(" ")).filter((value) => value !== className)).join(" "))
-
-        return el;
+        // el = element.id(el);
+        // el.setAttribute("class", ((el.className.split(" ")).filter((value) => value !== className)).join(" "))
+        // return el;
+        element.id(el).classList.remove(className);
     }
     /**
      * @function addClass
      * @param {String|HTMLElement} el element
      * @param {String} className
-     * @param {Boolean} [position=true] if false then the method 'unshift', if true then method 'push'
-     * @description add a class into element, if there is already a class name, then don't do it. 
-     * This is a alternative study to toggle.
      * @returns {HTMLElement}
      */
-    element.addClass = function (el, className, position = true) {
-        el = element.id(el);
-        var classList = el.className.split(" ");
-        if (classList.indexOf(className) === true) return el;
-        position ? classList.push(className) : classList.unshift(className);
-        el.setAttribute("class", classList.join(" "));
-        return el;
+    element.addClass = function (el, className) {
+        // el = element.id(el);
+        // var classList = el.className.split(" ");
+        // if (classList.indexOf(className) === true) return el;
+        // position ? classList.push(className) : classList.unshift(className);
+        // el.setAttribute("class", classList.join(" "));
+        // return el;
+        element.id(el).classList.add(className)
     }
     /**
      * @function toggleClass
@@ -277,7 +268,7 @@ function (element) {
         return el;
     }
     /**
-     * @function Core.el.removeChildren
+     * @function El.removeChildren
      * @param {String|HTMLElement} el element
      * @description remove the childrens of a element
      */
@@ -291,6 +282,21 @@ function (element) {
         }
     }
     /**
+     * @function El.interactChild
+     * @param {String|HTMLElement} el element
+     */
+    element.interactChild = function (el, callback) {
+        var childrens = [];
+        el = element.id(el);
+        if (el.children.length > 0) {
+            let i = el.children.length;
+            while (i--) {
+                callback.call(this, el.children.item(i), i, childrens.push(el.children.item(i)), el.children.length );
+            }
+        }
+        return childrens;
+    }
+    /**
      * @function getRoot 
      * @description get a value from root
      * @param {String} [variable]
@@ -299,241 +305,344 @@ function (element) {
     element.getRoot = function (variable, el = document.body) {
         return getComputedStyle(el).getPropertyValue(variable)
     }
-    /**
-     * @variable icon
-     * @description return a object-list of the icon filepath
-     */
-    element.icon = {
-        "behance": Core.dir("img/icon/behance.png"),
-        "css": Core.dir("img/icon/css.png"),
-        "email": Core.dir("img/icon/email.png"),
-        "github": Core.dir("img/icon/github.png"),
-        "html5": Core.dir("img/icon/html5.png"),
-        "url": Core.dir("img/icon/https.png"),
-        "instagram": Core.dir("img/icon/instagram.png"),
-        "javascript": Core.dir("img/icon/javascript.png"),
-        "process": Core.dir("img/icon/process.png"),
-        "psd": Core.dir("img/icon/psd.png"),
-        "ruby": Core.dir("img/icon/rb.png"),
-        "spotify": Core.dir("img/icon/spotify.png"),
-        "analytics": Core.dir("img/icon/analytics.png"),
-        "php": Core.dir("img/icon/php.png"),
-        "sql": Core.dir("img/icon/sql.png"),
-        "nodejs": Core.dir("img/icon/nodejs.png"),
-        "ai": Core.dir("img/icon/ai.png"),
-        "pixijs": Core.dir("img/icon/pixijs.png"),
-        "electron": Core.dir("img/icon/electron.png"),
-        "rpgmakermv": Core.dir("img/icon/rpgmakermv.png")
-    }
 }(El);
 
+// ====================================================================
+
 /**
- * @description standard elements into pages
+ * @field :route
+ * @description method to access the paths of the website
+ */
+var Route = {
+    // groups
+    _groups: {},
+    // routes
+    _routes: [],
+};
+
+/**
+ * @description this variable will stock all namespace
+ */
+var Routes = {
+
+}
+
+/**
+ * @description schema to define routes
  */
 void
 
+function (route) {
+    /**
+     * @function findBy 
+     * @description get the route defined
+     * @param {String} [string] value to search by
+     * @param {String} [kind] what will search for:
+     * 'namespace'
+     */
+    route.findBy = function (string, kind = 'namespace') {
+        if (kind === 'namespace') {
+            return global.Routes[string]
+        }
+    }
+    /**
+     * @function set 
+     * @description set a route 
+     * @returns {Route}
+     */
+    route.set = function () {
+        return new Routes();
+    }
+    /**
+     * @function group 
+     * @description set a grupo of routes
+     * @param {function} [callback]
+     */
+    route.group = function (callback) {
+        const instance = new Routes();
+        callback.call(this, instance);
+        return instance;
+    }
+    /**
+     * @function prefix 
+     * @description access a route by the prefix
+     * @param {String} [prefix]
+     */
+    route.prefix = function (prefixValue) {
+        if (route._groups.hasOwnProperty(prefixValue)) {
+            return route._groups[prefixValue]
+        } else {
+            return undefined;
+        }
+    }
+    /**
+     * @class Routes
+     * @classdesc control the route defined
+     */
+    class Routes {
+        /**
+         * @constructor
+         */
+        constructor() {
+            this._routes = [];
+            this._prefix = '';
+            this._namespace = '';
+            this._storage = {};
+            // get this class
+            Route._routes.push(this);
+        }
+        /**
+         * @method setItem
+         * @description stores a value
+         * @param {String} variableName
+         * @param {Any} variableValue 
+         */
+        setItem(variableName, variableValue) {
+            if (variableName && variableValue) {
+                this._storage[variableName] = variableValue;
+            }
+        }
+        /**
+         * @method getItem
+         * @description get a stored value
+         * @param {String} variableName
+         */
+        getItem(variableName) {
+            if (this._storage.hasOwnProperty(variableName)) {
+                return this._storage[variableName]
+            } else {
+                return undefined;
+            }
+        }
+        /**
+         * @method set 
+         * @description set a new route
+         * @param {String} [routeName]
+         * @param {String} [url]
+         * @returns {Object} return the route object
+         */
+        set(routeName, url) {
+            // if don't have
+            if (!(this.has(routeName))) {
+                // new route
+                const nroute = {
+                    name: routeName,
+                    path: url
+                }
+                // push
+                this._routes.push(nroute)
+                // return
+                return nroute;
+            } else {
+                // get
+                return this.get(routeName);
+            }
+        }
+        /**
+         * @method get 
+         * @description get the route by name
+         * @param {String} routeName 
+         */
+        get(routeName) {
+            return this._routes.find(element => element.name === routeName);
+        }
+        /**
+         * @method join
+         * @description join up a route to another {url}
+         * @param {String} routeName 
+         * @param {String} reference route name of the reference
+         * @param {String} folder 
+         */
+        join(routeName, reference, folder) {
+            if (this.has(reference)) {
+                //
+                reference = this.get(reference);
+
+                // new route
+                const nroute = {
+                    name: routeName,
+                    path: Core.join(reference.path, folder || routeName)
+                }
+                // push
+                this._routes.push(nroute)
+                // return
+                return nroute;
+            }
+            return undefined;
+        }
+        /**
+         * @method has 
+         * @description check out if already has the route
+         * @param {String} [routeName]
+         */
+        has(routeName) {
+            // filter
+            const find = this._routes.find(element => element.name === routeName);
+            // return
+            return !(Core.invalid(find));
+        }
+        /**
+         * @method prefix 
+         * @param {String} [value]
+         * @description defines a prefix for each routes
+         * @return {this}
+         */
+        prefix(value) {
+            this._prefix = value;
+            // in each
+            this._routes.forEach(route => {
+                // check if there is a prefix already
+                if (route.hasOwnProperty('prefix')) {
+                    route.name.replace(route.prefix, value);
+                } else {
+                    route.name = `${value}/${route.name}`;
+                    route.prefix = value;
+                }
+            })
+            // 
+            return this;
+        }
+        /**
+         * @method unique
+         * @description if the prefix is created, use it to 
+         * be able to access via 'Route.prefix()'
+         * @return {this}
+         */
+        unique() {
+            if (this._prefix.length > 0) {
+                Route._groups[this._prefix] = this;
+            }
+            return this;
+        }
+        /**
+         * @method routes 
+         * @description return all routes
+         * @return {Array}
+         */
+        routes() {
+            return this._routes;
+        }
+        /**
+         * @method namespace
+         * @description defines the namespace of the route.
+         * This will set this class to the variable 'Routes'
+         * @param {String} name 
+         * @return {this}
+         */
+        namespace(name) {
+            Route.namespace(name, this);
+            return this;
+        }
+        /**
+         * @method plug
+         * @description plug the path with a folder
+         * @param {String} routeName 
+         * @param {String} folder
+         * @returns {String}
+         */
+        plug(routeName, folder) {
+            return this.get(routeName).path.concat(folder)
+            return Core.join(this.get(routeName).path, folder);
+        }
+        /**
+         * @method to
+         * Creates a temporary '<a>' to access the url
+         * @param {String} routeName 
+         * @param {String} file 
+         */
+        to(routeName, file) {
+            let href = El.Attr(El.create('a', document.body), {
+                href: this.plug(routeName, file)
+            })
+
+            href.click()
+
+            document.body.removeChild(href)
+        }
+    }
+}(Route);
+
+/**
+ * @function namespace
+ * @description set a namespace for the route name. This will bind the 
+ * route to a variable.
+ * @param {String} [value]
+ * @param {Routes} [instance]
+ */
+Route.namespace = function (value, instance) {
+    instance._namespace = name;
+    Routes[value] = instance;
+}
+
+// Main routes
+Route.group((instance) => {
+    // home
+    instance.set('home', 'http://localhost:3000')
+
+    // general
+    instance.join('css', 'home')
+    instance.join('data', 'home')
+    instance.join('img', 'home')
+    instance.join('js', 'home')
+
+    // setItem
+    instance.setItem('icon', (str) => instance.plug('home', `/img/icon/${str}`));
+    instance.setItem('img', (str) => instance.plug('home', `/img/${str}`));
+    instance.setItem('lang', (file, lang = 'en') => instance.plug('home', `/data/text/${lang}/${file}`));
+}).namespace('Main')
+
+// ====================================================================
+
+/**
+ * @field :page
+ * @description handles with general elements
+ */
+var Page = {};
+
+void
+
 function (page) {
-    // =================================================================================
     /**
      * @var last_scroll_top
      * @description useful for creating animations that handles the scroll
      */
     page.last_scroll_top = 0;
-    page.command = null;
-    // =================================================================================
     /**
-     * @function header_scroll_down
-     * @description when it is on portrait mode or the scroll is visible. Use it
-     * inside of an 'onscroll'. 
+     * @function onscroll
+     * @description check if the page scrolls
      */
-    page.header_scroll_down = function (callback) {
-
-        const scrollTop = document.documentElement.scrollTop;
-
-        if (scrollTop > page.last_scroll_top) {
-            // [down]
-        } else {
-            // [up]
-        }
-
-        page.last_scroll_top = scrollTop;
+    // document.body.onscroll = function (scroll) {
+    //     if (Core.isFunction(Page.onscroll)) Page.onscroll();
+    // }
+    /**
+     * @description everytime that the page is resized, check up the style
+     */
+    // document.body.onresize = function () {
+    //     Core.device_orientation();
+    //     if (Core.isFunction(Page.onresize)) Page.onresize();
+    // }
+    if (!localStorage.getItem('lang')) {
+        localStorage.setItem('lang', 'en')
     }
-    // =================================================================================
-    async function setup_terminal() {
-        const terminal = document.getElementsByTagName("terminal").item(0);
-        if (!El.is(terminal)) return;
-        const search = El.Attr(El.create("input", terminal), {
-            "id": "terminal-search",
-            "type": "text",
-            "tabindex": 1,
-            "placeholder": localStorage.getItem("terminal-search-placeholder") || "Hi, dude! Type help here | É brasileiro? Digite pt"
-        })
+    /**
+     * get text 
+     */
+    page.text = async function (filename) {
+        const lang = localStorage.getItem('lang');
 
-        search.onfocus = () => {
-            search.onkeydown = (event) => {
-                if (event.keyCode === 13) {
-                    page.commandRun(search.value.trim())
-                }
-            }
-        }
-
-        setup_terminal_overlay();
+        var text = await fetch(Routes.Main.getItem('lang')(filename, lang))
+        return await text.text()
     }
+    /**
+     * get json 
+     */
+    page.json = async function (filename) {
+        const lang = localStorage.getItem('lang');
 
-    function setup_terminal_overlay() {
-        const overlay = El.id("terminal-overlay");
-        if (!El.is(overlay)) return;
-        // create list of command
-        const content = El.Attr(El.create("section", overlay), {
-            "id": "terminal-overlay-content"
-        })
-
-        fetch(Core.lang("command.json")).then(response => {
-            return response.json().then(data => {
-                page.command = data;
-                setup_list_Command();
-            })
-        })
+        var text = await fetch(Routes.Main.getItem('lang')(filename, lang))
+        return await text.json()
     }
-
-    function setup_list_Command() {
-        const content = El.id("terminal-overlay-content");
-
-        page.command.forEach(command => {
-            El.Attr(El.create("div", content), {
-                "id": "terminal-overlay-command"
-            }).innerHTML = `<label class=${command.class}>${command.label}</label>  ${command.description}`
-        })
-    }
-    // =================================================================================
-    page.orientation_els = function (format) {
-        const terminal = document.getElementsByTagName("terminal").item(0);
+}(Page);
 
 
-        [terminal, El.id("terminal-overlay-content")].forEach(el => {
-            if (!(El.is(el))) return;
-            El.removeClass(el, format.reverse);
-            El.addClass(el, format.current)
-        })
-    }
-    // =================================================================================
-    page.setup_social_media = function () {
-        const social = El.id("social-media");
-        if (!El.is(social)) return;
-        El.removeChild(social);
-        ["behance", "github", "instagram", "spotify", "email"].forEach(name => {
-            const link = El.Attr(El.create("a", social), {
-                "href": page.social_url[name]
-            })
-
-            El.Attr(El.create("img", link), {
-                "id": "social-media-icon",
-                "alt": `${name} social media`,
-                "src": Core.dir(`img/icon/${name}.png`)
-            })
-        })
-    }
-
-    page.social_url = {
-        "behance": "https://www.behance.net/daxsoft",
-        "instagram": "https://www.instagram.com/vorlefan/",
-        "github": "https://github.com/DaxSoft",
-        "spotify": "https://open.spotify.com/user/8btt9iyhho52rxvtd53b8x3mi?si=MXwEmEEsRD-mNi3Eq_hmgA",
-        "email": "mailto:dax-soft@live.com"
-    }
-    // =================================================================================
-    Promise.resolve()
-        .then(setup_terminal)
-    // =================================================================================
-    page.commandRun = function (value) {
-        // what kind of command?
-
-        // if (/^\@/gim.test(value)) { // @ global
-            
-        // } 
-        if (/^\$/gim.test(value)) { // $ eval 
-            evalCommand(value.replace(/^\$/, ""))
-            return clearCommand();
-        } else { // local command
-            globalCommand(value)
-            return clearCommand();
-        }
-    }
-
-    async function globalCommand(value) {
-        /**
-         * @description language setup
-         */
-        if (/^\s?pt/gim.test(value)) {
-            localStorage.setItem('lang', 'pt')
-            localStorage.setItem('terminal-search-placeholder', "E aí! Digite help aqui | Not brazilian? Type en")
-            document.location.reload();
-            return true;
-        } else if (/^\s?en/gim.test(value)) {
-            localStorage.setItem('lang', 'en')
-            localStorage.setItem('terminal-search-placeholder', "Hi, dude! Type help here | É brasileiro? Digite pt")
-            document.location.reload();
-            return true;
-        } 
-        /**
-         * @description page itself
-         */
-        if (/^\s?(refresh|restart)/gim.test(value)) {
-            document.location.reload();
-            return true;
-        } else if (/^\s?(back)/gim.test(value)) {
-            El.id("terminal-overlay").style.height = "0%";
-            return true;
-        } else if (/^\s?(help)/gim.test(value)) {
-            El.id("terminal-overlay").style.height = "100%";
-            return true;
-        } else if (/^\s?(about)/gim.test(value)) {
-            localStorage.setItem("content-class", "about")
-            localStorage.setItem('current-content', 'about');
-            document.location.reload();
-            return true;
-        } else if (/^\s?(main)/gim.test(value)) {
-            localStorage.setItem("content-class", "")
-            localStorage.setItem('current-content', 'main');
-            document.location.reload();
-            return true;
-        }
-        /**
-         * @description themes
-         */
-        if (/^\s?(white)/gim.test(value)) {
-            localStorage.setItem("theme", Core.dir("css/theme.white.css"))
-            document.location.reload();
-            return true;
-        } else if (/^\s?(original)/gim.test(value)) {
-            localStorage.setItem("theme", "#")
-            document.location.reload();
-            return true;
-        } else if (/^\s?(golden)/gim.test(value)) {
-            localStorage.setItem("theme", Core.dir("css/theme.golden.css"))
-            document.location.reload();
-            return true;
-        } 
-
-        return false;
-    }
-
-    async function evalCommand(value) {
-        /**
-         * @description language setup
-         */
-        try {
-            eval(value);
-            return true;
-        } catch (err) {
-            return false;
-        };
-    }
-
-
-    function clearCommand() {
-        El.id("terminal-search").value = "";
-    }
-}(Core.page);
-
-// https://developer.mozilla.org/pt-BR/docs/Web/API/Storage
+Core.device_orientation();

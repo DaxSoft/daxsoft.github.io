@@ -1,308 +1,444 @@
 'use strict';
 /**
- * @file index.js
- * @description handles with the elements from the 'index.html'
+ * @file home
+ * Control the home page
  */
-var Index = {};
+
+var Home = {};
 
 void
 
-function (index) {
-    index.work = {
-        index: 0,
-        current: null,
-        data: null
-    }
-    // =================================================================================
-    document.body.onresize = () => {
-        device_orientation();
-    }
-    // =================================================================================
-    async function device_orientation() {
-        const format = Core.device_orientation();
+function (home) {
+    home.el = {};
+    /**
+     * start objects
+     */
+    async function start() {
 
-        Core.page.orientation_els(format);
-
-        ["content"].forEach(id => {
-            const el = El.id(id);
-            if (!El.is(el)) return;
-            El.removeClass(el, format.reverse);
-            El.addClass(el, format.current);
-            El.addClass(el, localStorage.getItem("content-class"))
+        new Components.alert.Geral({
+            duration: 4000,
+            label: ({
+                en: 'Please, do not access it with Mobile yet! This is just a temporary portfolio!',
+                pt: 'Por favor, não acesse com o celular ainda! Isso é apenas um portfólio temporário!'
+            })[localStorage.getItem('lang')],
+            position: 'bottomRight'
         })
-    }
-    // =================================================================================
-    index.setup_content = async function () {
-        const content = El.id("content");
-        content.innerHTML = "";
 
-        await setup_localStorage();
+        await create_profile();
 
-        let localContent = Core.dir(index.data.content[localStorage.getItem('current-content')])
+        create_switch_lang()
 
-        console.log(localContent);
-
-
-        setTimeout(() => {
-            fetch(localContent).then(response => {
-                return response.text().then((text_element) => {
-                    content.innerHTML = text_element;
-                    const func_con = setup_scriptContent(localStorage.getItem('current-content'));
-                    func_con.call(this);
-                })
-            })
+        setTimeout(async () => {
+            await create_recent_work()
         }, 500)
 
+        await create_whatIdo()
 
-        // theme setup
-        El.Attr("theme", {
-            "href": localStorage.getItem("theme")
+        create_drawer();
+
+        El.Attr(El.create('label', El.id('content')), {
+            id: 'commission'
+        }).innerHTML = {
+            en: 'Open to commission! Hire me :)',
+            pt: 'Aberto para pedidos! Contrate me :)'
+        } [localStorage.getItem('lang')]
+    }
+
+    function create_drawer() {
+        home.el.drawer = new Components.window.Drawer({
+            parent: El.id('content'),
+            onclose: () => {
+                home.el.drawer.hide();
+            },
+            id: 'drawer'
         })
 
-    }
 
 
-    async function setup_localStorage() {
-        if (!localStorage.getItem('lang')) localStorage.setItem('lang', index.data.lang);
-        if (!localStorage.getItem('current-content')) localStorage.setItem('current-content', 'main');
-        if (!localStorage.getItem("content-class")) localStorage.setItem("content-class", "")
-        if (!localStorage.getItem("theme")) localStorage.setItem("theme", "#")
+        home.el.profile.skills.button.onclick = async () => {
+            home.el.drawer.configure({
+                header: {
+                    en: 'My Skills',
+                    pt: 'Minhas Habilidades'
+                } [localStorage.getItem('lang')],
+                body: await Page.text('myskills.html'),
+                onclose: () => {
+                    home.el.drawer.hide();
+                }
+            }).refresh().open()
+        }
     }
 
-    function setup_scriptContent(id) {
-        return {
-            'main': setup_mainContent,
-            'about': setup_aboutContent
-        } [id]
-    }
-    // =================================================================================
-    fetch(Core.dir("data/terminal.json")).then(response => {
-        return response.json().then(data => {
-            index.data = data;
-            index.setup_content();
-            device_orientation();
+    /**
+     * Create my profile pic * little about me 
+     */
+    async function create_profile() {
+        home.el.profile = new Components.opt.Profile({
+            parent: El.id('content')
         })
-    })
-    // =================================================================================
-    function setup_mainContent() {
-        const author_about_text = El.id("main-author-about");
-        if (El.is(author_about_text)) {
-            fetch(Core.dir(`data/text/${localStorage.getItem('lang')}/author-about.txt`)).then(response => {
-                return response.text().then(data => {
-                    author_about_text.innerHTML = data;
-                })
+
+
+    }
+
+    /**
+     * Switch the language to
+     */
+    function create_switch_lang() {
+        home.el.lang = new Components.opt.Lang();
+    }
+
+    /**
+     * What I do
+     */
+    async function create_whatIdo() {
+        // section
+        El.Attr(El.create('section', El.id('content')), {
+            id: 'what_do'
+        })
+        // text
+        home.el.what_doText = El.Attr(El.create('div', El.id('what_do')), {
+
+        })
+        home.el.what_doText.innerHTML = await Page.text('whatdo.html')
+    }
+
+    /**
+     * Recent works
+     */
+    async function create_recent_work() {
+        home.el.recent = {};
+
+        El.Attr(El.create('section', El.id('content')), {
+            id: 'recent_work'
+        })
+
+        await create_rsara();
+
+        await create_rimmersion()
+
+        home.el.recent.cards = El.interactChild(El.id('recent_work'), (children, index, childrens, size) => {
+
+            children.setAttribute('index', index);
+
+            if ((index === size - 1)) El.addClass(children, 'recent_highlight')
+        })
+
+        home.el.recent.index = home.el.recent.cards.length - 1;
+
+
+
+        await create_predr()
+
+        await create_nextr()
+    }
+
+    async function create_rsara() {
+        // sara-costureira
+        home.el.recent.sara = new Components.card.Basic({
+            parent: El.id('recent_work'),
+            header: 'Sara Costureira',
+            body: await Page.text('work.sara_costureira.html'),
+            id: 'sara_costureira_card',
+            theme: 'card-standard card_s1'
+        })
+
+        home.el.recent.sara.details = function () {
+            Components.notification.Create({
+                label: 'Sara Costureira',
+                icon: 'logo-sc_small.png',
+                time: 4000,
+                components: [{
+                        component: 'button-basic',
+                        class: 'btn-white',
+                        label: 'Site',
+                        onclick: function () {
+                            El.Attr(El.create('a'), {
+                                href: 'https://saracostureira.com.br/'
+                            }).click()
+                            //document.body.removeChild(El.id('temp-link'));
+                            //this._popup.destroy(true)
+                        }
+                    },
+                    {
+                        component: 'button-basic',
+                        class: 'btn-white',
+                        label: {
+                            en: 'Details',
+                            pt: 'Detalhes'
+                        } [localStorage.getItem('lang')],
+                        onclick: function () {
+                            El.Attr(El.create('a'), {
+                                href: '../portfolio/sara_costureira.html'
+                            }).click()
+                            //document.body.removeChild(El.id('temp-link'));
+                            //this._popup.destroy(true)
+                        }
+                    },
+                    {
+                        component: 'button-basic',
+                        class: 'btn-white',
+                        label: '&times;',
+                        onclick: function () {
+                            this._popup.destroy(true)
+                        }
+                    }
+                ]
             })
-            Core.page.setup_social_media();
         }
 
-        // recent-work
-        const recent_work = El.id("recent-work")
-        if (El.is(recent_work)) {
 
-            fetch(Core.dir("data/work.json")).then(response => {
-                return response.json().then(data => {
-                    index.work.data = data;
-                    index.work.index = Core.fclamp(data.length - 1, 0, data.length);
-                    index.work.current = data[index.work.index];
-                    // titlename
-                    El.id("recent-work-titlename").innerHTML = index.work.current.titlename;
-                    // gallery
-                    setTimeout(() => {
-                        index.work.current.media.forEach(source => {
-                            const picture = El.Attr(El.create("img", El.id("recent-work-media")), {
-                                "alt": "picture of the recent work",
-                                "src": Core.dir(source)
-                            })
-                        })
-                    }, 200)
-                    // description
-                    fetch(Core.lang(index.work.current.description)).then(response => {
-                        return response.text().then(data => {
-                            El.id("recent-work-description").innerHTML = data;
-                        })
-                    })
-                    // link
-                    setTimeout(() => {
-                        Object.keys(index.work.current.link).map(icon_name => {
-                            const url = index.work.current.link[icon_name];
-                            let link = El.Attr(El.create("a", El.id("recent-work-link")), {
-                                "href": url
-                            })
-                            El.Attr(El.create("img", link), {
-                                "id": "recent-work-link-img",
-                                "alt": "project link",
-                                "src": El.icon[icon_name]
-                            })
-                        })
-                    }, 200)
-                })
+    }
+
+    async function create_rimmersion() {
+        // immersion
+        home.el.recent.immersion = new Components.card.Basic({
+            parent: El.id('recent_work'),
+            header: 'Immersion Plugin Package',
+            body: await Page.text('work.immersion_plugin.html'),
+            id: 'immersion_card',
+            theme: 'card-standard card_s1'
+        })
+
+        home.el.recent.immersion.details = function () {
+            Components.notification.Create({
+                label: 'Immersion Plugin Package',
+                icon: 'rpgmakermv.png',
+                time: 4000,
+                components: [{
+                        component: 'button-basic',
+                        class: 'btn-white',
+                        label: {
+                            en: 'Details',
+                            pt: 'Detalhes'
+                        } [localStorage.getItem('lang')],
+                        onclick: function () {
+                            El.Attr(El.create('a'), {
+                                href: '../rpgmaker/immersion_plugin.html'
+                            }).click()
+                        }
+                    },
+                    {
+                        component: 'button-basic',
+                        class: 'btn-white',
+                        label: 'RPG Maker Forum',
+                        onclick: function() {
+                            El.Attr(El.create('a'), {
+                                href: 'https://forums.rpgmakerweb.com/index.php?threads/immersion-0-2-3-time-cycle-period.109262/'
+                            }).click()
+                        }
+                    },
+                    {
+                        component: 'button-basic',
+                        class: 'btn-white',
+                        label: '&times;',
+                        onclick: function () {
+                            this._popup.destroy(true)
+                        }
+                    }
+                ]
             })
-
         }
     }
 
-    function setup_aboutContent() {
-        const author_about_text = El.id("main-author-about");
-        if (El.is(author_about_text)) {
-            fetch(Core.dir(`data/text/${localStorage.getItem('lang')}/author-about.txt`)).then(response => {
-                return response.text().then(data => {
-                    author_about_text.innerHTML = data;
-                })
-            })
-            Core.page.setup_social_media();
-        }
-        // what-do
-        const what_do = El.id("what-do");
-        if (El.is(what_do)) {
-            fetch(Core.lang("whatdo.txt")).then(response => {
-                return response.text().then(data => {
-                    El.id("what-do-text").innerHTML = data;
-                })
-            })
-        }
-        // tools
-        const tools = El.id("tools");
-        if (El.is(tools)) {
-            const front_end = El.id("front-end");
-            ["javascript", "html5", "css", "ruby", "analytics"].forEach(name => {
-                let icon = El.Attr(El.create("img", front_end), {
-                    "alt": "front end tool",
-                    "src": El.icon[name]
-                })
+    async function create_predr() {
+        home.el.recent.pred = El.Attr(El.create('span', El.id('recent_work')), {
+            class: 'recent_work_arrow',
+            name: 'arrow_recent'
+        })
 
-                let front_end_description = {
-                    "javascript": {
-                        "en": "Language of Programmation: Javascript",
-                        "pt": "Linguagem de Programação: Javascript"
-                    },
+        home.el.recent.pred.innerHTML = '&UpArrow;'
 
-                    "html5": {
-                        "en": "Markup Language: HTML5",
-                        "pt": "Linguagem de Marcação: HTML5"
-                    },
+        home.el.recent.pred.onclick = () => {
+            home.el.recent.index--;
+            home.el.recent.index %= home.el.recent.cards.length;
 
-                    "css": {
-                        "en": "Cascading Style Sheets 3",
-                        "pt": "Cascading Style Sheets 3"
-                    },
-
-                    "ruby": {
-                        "en": "Language of Programmation: Ruby",
-                        "pt": "Linguagem de Programação: Ruby"
-                    },
-
-                    "analytics": {
-                        "en": "Tool: Google Analytics",
-                        "pt": "Ferramenta: Google Analytics"
-                    }
-                }
-
-                icon.onclick = () => {
-                    Popup.on({
-                        "class": "popup-info",
-                        "duration": 1500,
-                        "position": "center bottom",
-                        "text": front_end_description[name][localStorage.getItem('lang')]
-                    })
-                }
-            })
-
-            const back_end = El.id("back-end");
-            ["php", "sql", "nodejs"].forEach(name => {
-                let icon = El.Attr(El.create("img", back_end), {
-                    "alt": "back end tool",
-                    "src": El.icon[name]
-                })
-
-                let back_end_description = {
-                    "php": {
-                        "en": "Language of Programmation: PHP",
-                        "pt": "Linguagem de Programação: PHP"
-                    },
-
-                    "sql": {
-                        "en": "Structured Query Language: SQL",
-                        "pt": "Linguagem de Consulta Estruturada: SQL"
-                    },
-
-                    "nodejs": {
-                        "en": "Run-time: NodeJS",
-                        "pt": "Run-time: NodeJS"
-                    }
-                }
-
-                icon.onclick = () => {
-                    Popup.on({
-                        "class": "popup-info",
-                        "duration": 1500,
-                        "position": "center bottom",
-                        "text": back_end_description[name][localStorage.getItem('lang')]
-                    })
-                }
-            })
-
-            const design = El.id("tool-design");
-            ["psd", "ai"].forEach(name => {
-                let icon = El.Attr(El.create("img", design), {
-                    "alt": "design tool",
-                    "src": El.icon[name]
-                })
-
-                let description = {
-                    "psd": {
-                        "en": "Adobe Photoshop",
-                        "pt": "Adobe Photoshop"
-                    },
-
-                    "ai": {
-                        "en": "Adobe Illustrator",
-                        "pt": "Adobe Illustrator"
-                    }
-                }
-
-                icon.onclick = () => {
-                    Popup.on({
-                        "class": "popup-info",
-                        "duration": 1500,
-                        "position": "center bottom",
-                        "text": description[name][localStorage.getItem('lang')]
-                    })
-                }
-            })
-
-            const framework_tools = El.id("framework-tool");
-            ["pixijs", "electron", "rpgmakermv"].forEach(name => {
-                let icon = El.Attr(El.create("img", framework_tools), {
-                    "alt": "framework & apps tool",
-                    "src": El.icon[name]
-                })
-
-                let description = {
-                    "pixijs": {
-                        "en": "JavaScript Framework: PixiJS",
-                        "pt": "JavaScript Framework: PixiJS"
-                    },
-
-                    "electron": {
-                        "en": "JavaScript Framework: ElectronJS",
-                        "pt": "JavaScript Framework: ElectronJS"
-                    },
-
-                    "rpgmakermv": {
-                        "en": "Game Engine: RPG Maker MV",
-                        "pt": "Engine de Jogos: RPG Maker MV"
-                    },
-                }
-
-                icon.onclick = () => {
-                    Popup.on({
-                        "class": "popup-info",
-                        "duration": 1500,
-                        "position": "center bottom",
-                        "text": description[name][localStorage.getItem('lang')]
-                    })
+            home.el.recent.cards.map(children => {
+                if (+children.getAttribute('index') === home.el.recent.index) {
+                    El.addClass(children, 'recent_highlight')
+                } else {
+                    El.removeClass(children, 'recent_highlight')
                 }
             })
         }
     }
-}(Index);
+
+    async function create_nextr() {
+        home.el.recent.next = El.Attr(El.create('span', El.id('recent_work')), {
+            class: 'recent_work_arrow',
+            style: `
+                top: 2em;
+            `,
+            name: 'arrow_recent'
+        })
+
+        home.el.recent.next.innerHTML = '&DownArrow;'
+
+        home.el.recent.next.onclick = () => {
+            home.el.recent.index++;
+            home.el.recent.index %= home.el.recent.cards.length;
+
+            home.el.recent.cards.map(children => {
+                if (+children.getAttribute('index') === home.el.recent.index) {
+                    El.addClass(children, 'recent_highlight')
+                } else {
+                    El.removeClass(children, 'recent_highlight')
+                }
+            })
+        }
+
+    }
+
+
+    home.infoSkill = function (tag) {
+        Components.alert.closeAll()
+        switch (tag) {
+            case 'ai':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'Adobe Illustrator: Vector & Print Design',
+                        pt: 'Adobe Illustrator: Vetores & Print Design'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'psd':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'Adobe Photoshop: UI Elements & Drawing',
+                        pt: 'Adobe Photoshop: Elementos UI & Desenhos'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'rpgmakermv':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'RPG Maker MV: Engine to create games',
+                        pt: 'RPG Maker MV: Engine para criar jogos'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'vscode':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'Visual Studio Code: Gorgerous IDE to code!',
+                        pt: 'Visual Studio Code: IDE maravilhosa para programar!'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'laragon':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'Laragon: To locally test my web projects!',
+                        pt: 'Laragon: Para testar localmente meus projetos web!'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'evernote':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'Evernote: To write & plan my projects and ideas',
+                        pt: 'Evernote: Para escrever & planejar meus projetos e ideias'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'javascript':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'JavaScript: To paint my ideas and make the dreams come to true',
+                        pt: 'JavaScript: Pintar minhas ideias e fazer os sonhos se tornarem reais'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'html':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'HTML5: To create the overall concept of the website & electronjs programs',
+                        pt: 'HTML5: Criar os conceitos gerais dos website & programas electronjs'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'css':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'CSS3: To make up everything beautiful!',
+                        pt: 'CSS3: Para que tudo fique bonito!'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'mongodb':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'MongoDB: Database system to keep up the datas of your project',
+                        pt: 'MongoDB: Sistema de banco de dados para manter os dados de seu projeto'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'fastify':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'Fastify: Framework to create a fast back end (server side) solution',
+                        pt: 'Fastify: Framework para criar uma solução rápida no back end'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'node':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'NodeJS: To create the server of your project',
+                        pt: 'NodeJS: Criar o lado do servidor de seu projeto'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'pixijs':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'PixiJS: To handle with sprites, videos and audio for Web projects',
+                        pt: 'PixiJS: Manusear sprites, vídeos e áudios para projetos Web'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            case 'electron':
+                new Components.alert.Geral({
+                    duration: 2000,
+                    label: ({
+                        en: 'ElectronJS: Framework to create multiplatform apps with JavaScript!',
+                        pt: 'ElectronJS: Framework para criar aplicativos multiplataformas com JavaScript!'
+                    })[localStorage.getItem('lang')],
+                    position: 'bottomRight'
+                })
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    // start out
+    Promise.resolve()
+        .then(start);
+}(Home);
