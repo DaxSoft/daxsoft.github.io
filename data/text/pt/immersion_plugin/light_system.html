@@ -1,0 +1,107 @@
+<!-- <button style="margin-top: 1em;" class="btn-standard" onclick="Scene.drawer('Light Gallery', '/immersion_plugin/gallery.light_system.html')">Gallery</button> -->
+
+<h1>Descrição</h1>
+
+<p>
+    Para esse projeto eu adaptei o 'pixi-lights' para que você possa criar uma ambientação incrível.
+    Então, você poderá criar luzes usando esse sistema, como também, criar utilizando imagens, com blend
+    modes.
+
+    Para funcionar corretamente, cada sprite precisará ter uma textura de 'normal-map'. O arquivo,
+    deverá estar na mesma pasta que o a textura 'diffuse', com o prefixo '!', seguido pelo mesmo nome
+    do arquivo da textura 'diffuse':
+
+    'SM_uVendedor.png | !​SM_uVendedor.png'
+</p>
+
+<div class='gridp2'>
+    <img src="../../../../img/work/immersion_plugin/sm-uvendedor_orig.png" alt="diffuse sprite">
+    <img src="../../../../img/work/immersion_plugin/sm-uvendedor_1_orig.png" alt="normal sprite">
+</div>
+
+<h1>Features</h1>
+
+<div class='todo'>
+    <label>Pixi Lights</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Você será capaz de criar luzes usando 'pixi-lights', que incluí:
+
+            * ambient-light
+            * directional-light
+            * point-light
+
+            Todas as principais variáveis são editáveis no editor.
+        </p>
+    </div>
+
+    <label>Sprite Light</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Você pode criar utilizando imagens, com blend modes.
+        </p>
+    </div>
+
+    <label>Color</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            O sistema tem um sistema de cores completo, na qual incluí:
+
+            * Possibilidade mudar os valores RGB
+            * Lista com cores já definidas
+
+            Será incluso:
+
+            * jfsiii/chromath.
+        </p>
+    </div>
+
+    <label>Pixi Filter</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Você poderá adicionar filtros nas luzes, contudo, somente nas 'sprite-lights'.
+            Como, por exemplo, BlurFilter
+        </p>
+    </div>
+
+    <label>Condições</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Você pode definir condições para, quando somente as condições forem aceitas,
+            a luz será validada.
+
+            - Perído do dia : somente quando, por exemplo, estiver de noite
+            - floor : somente quando o jogador estiver no mesmo andar
+            - switch : somente quando o valor da Id X de uma switch do jogo estiver verdadeiro.
+        </p>
+    </div>
+
+    <label>Efeito - Pulse</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Efeito de pulsar nas luzes, útil para criar algo como 'efeito de explosão'
+        </p>
+    </div>
+
+    <label>Effect - Oscilation</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Efeito de oscilação nas luzes, útil para criar luzes com problemas de energia
+        </p>
+    </div>
+
+</div>

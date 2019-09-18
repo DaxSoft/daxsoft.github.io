@@ -1,0 +1,47 @@
+[
+    {
+        "id": "about",
+        "name": "What is it about?",
+        "doc": "immersion_plugin/about.html"
+    }, 
+    {
+        "id": "light_system",
+        "name": "Light System",
+        "doc": "immersion_plugin/light_system.html"
+    },
+    {
+        "id": "collision_system",
+        "name": "Collision System",
+        "doc": "immersion_plugin/collision.html"
+    },
+    {
+        "id": "movement_system",
+        "name": "Movement System",
+        "doc": "immersion_plugin/movement.html"
+    },
+    {
+        "id": "time_system",
+        "name": "Time System",
+        "doc": "immersion_plugin/time.html"
+    },
+    {
+        "id": "particle_system",
+        "name": "Particle System",
+        "doc": "immersion_plugin/particle.html"
+    },
+    {
+        "id": "sound_system",
+        "name": "3D Spatial Sound System",
+        "doc": "immersion_plugin/sound.html" 
+    },
+    {
+        "id": "map_system",
+        "name": "Map System & Editor",
+        "doc": "immersion_plugin/map.html" 
+    },
+    {
+        "id": "gallery",
+        "name": "Photos & Videos",
+        "doc": "immersion_plugin/gallery.html"
+    }
+]

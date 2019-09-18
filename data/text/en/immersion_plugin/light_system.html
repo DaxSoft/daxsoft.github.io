@@ -1,0 +1,107 @@
+
+<!-- <button style="margin-top: 1em;" class="btn-standard" onclick="Scene.drawer('Light Gallery', '/immersion_plugin/gallery.light_system.html')">Gallery</button> -->
+
+<h1>Description</h1>
+
+<p>For this project I have adapted the 'pixi-lights' to let you create a gorgeous ambience for your game.
+    So, you will be able to create lights using this system as well, you can create 'normal lights', in
+    which is using normal pictures (sprites) with blend modes.
+
+    To work correctly, every sprite needs to have a normal-map texture. The file, needs to be on the same
+    folder that the diffuse sprite (file), with the prefix '!' followed by the name of the diffuse name:
+    'SM_uVendedor.png | !​SM_uVendedor.png'
+</p>
+
+<div class='gridp2'>
+    <img src="../../../../img/work/immersion_plugin/sm-uvendedor_orig.png" alt="diffuse sprite">
+    <img src="../../../../img/work/immersion_plugin/sm-uvendedor_1_orig.png" alt="normal sprite">
+</div>
+
+<h1>Features</h1>
+
+<div class='todo'>
+    <label>Pixi Lights</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            You are able to create lights using 'pixi-lights', in which includes:
+
+            * ambient-light
+            * directional-light
+            * point-light
+
+            All the variables such position, lightHeight and so on, can be edited on the editor.
+        </p>
+    </div>
+
+    <label>Sprite Light</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            You are able to create lights using PIXI.Sprite, in which means, using pictures as light source.
+            To create the 'sense of light', you can change the blend modes at will.
+        </p>
+    </div>
+
+    <label>Color</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            The system has a complete color system, in which includes:
+
+            * Possibility to change the RGB values
+            * List of defined colors to use at will 
+
+            It will be included:
+
+            * jfsiii/chromath to handle with colors.
+        </p>
+    </div>
+
+    <label>Pixi Filter</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            You can add pixi-filters on lights. However, only on sprite-lights.
+            Such, for instance, BlurFilter
+        </p>
+    </div>
+
+    <label>Conditions</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            You can set up conditions to, only when the conditions meets true, the light 
+            source will be visible. 
+
+            * Time Period : only when the period meets (such, only in night)
+            * Switch ID : only when the gameSwitch from ID x, meets true.
+            * Floor : only when the player is on the floor X 
+        </p>
+    </div>
+
+    <label>Effect - Pulse</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Pulse effect on lights, useful for creating 'explosion light effect', or whatever
+        </p>
+    </div>
+
+    <label>Effect - Oscilation</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+           Oscilation effect on lights, useful for creating lights with some 'energy problems',
+           like lamps on dungeons and whatever.
+        </p>
+    </div>
+
+</div>

@@ -1,0 +1,84 @@
+<h1>Description</h1>
+
+<p>For this project I have adapted the 'sinova-collision' system to create the Collision system.
+    As well, I've build a pixel-movement that follows up the grid of 8x8. However, sprites & objects
+    can move freely, the grid it will only be used as reference.
+</p>
+
+<h1>Features</h1>
+
+<div class='todo'>
+
+    <label>Circle Body</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Pre-defined collision body with circle shape, in which you can edit:
+
+            - radius
+            - position
+            - average scale
+            - padding
+        </p>
+    </div>
+
+    <label>Rectangle Body</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Pre-defined collision body with rectangle shape, in which you can edit:
+
+            - position
+            - scale (x, y)
+            - angle
+            - padding
+            - average scale
+        </p>
+    </div>
+
+    <label>Polygon Body</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            Pre-defined collision body, in which you can edit:
+
+            - scale (x, y)
+            - average scale
+            - position
+            - angle
+            - add points
+            - delete points
+            - padding
+        </p>
+    </div>
+
+    <label>Conditions</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            You can set up conditions to, only when the conditions meets true, the collision 
+            will be validated!
+
+            - floor : only when player is the same floor 
+            - switch : only when the gameSwitch from ID x, meets true.
+        </p>
+    </div>
+
+    <label>Link to the Floor</label>
+    <div>
+        <input type="checkbox" checked>
+
+        <p>
+            To the player went in another floor on map, it needs one collision with this property.
+            You have two options:
+
+            * horizontal - it's for passages in which the direction is up/down
+            * vertical - it's for passages in which the direction is left/right
+        </p>
+    </div>
+
+</div>
