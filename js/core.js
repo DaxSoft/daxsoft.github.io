@@ -577,7 +577,7 @@ Route.namespace = function (value, instance) {
 // Main routes
 Route.group((instance) => {
     // home
-    instance.set('home', 'https://daxsoft.github.io')
+    instance.set('home', 'http://localhost:3000')
 
     // general
     instance.join('css', 'home')

@@ -1,444 +1,659 @@
 'use strict';
+
 /**
  * @file home
  * Control the home page
  */
 
-var Home = {};
+var Scene = {};
 
 void
 
-function (home) {
-    home.el = {};
-    /**
-     * start objects
-     */
+function (scene) {
+
+    // |-----------------------------------------------------------------------
+    // | variables
+    // |-----------------------------------------------------------------------
+
+    scene.el = {};
+    scene.isPortrait = false;
+
+    // |-----------------------------------------------------------------------
+    // | [start]
+    // | Start out all components 
+    // |-----------------------------------------------------------------------
+
     async function start() {
 
-        new Components.alert.Geral({
-            duration: 4000,
-            label: ({
-                en: 'Please, do not access it with Mobile yet! This is just a temporary portfolio!',
-                pt: 'Por favor, não acesse com o celular ainda! Isso é apenas um portfólio temporário!'
-            })[localStorage.getItem('lang')],
-            position: 'bottomRight'
+        Components.alert.Create({
+            label: ({en: 'Hire me :) Open to commission!', pt: 'Contrate me :) Aberto à projetos'})[localStorage.getItem('lang')],
+            duration: 3500,
+            position: 'topCenter',
+            icon: Route.Main.getItem('icon')('person.png')
         })
+
+        scene.el.menuBar = El.create('section', document.body)
+        CSS.attach(scene.el.menuBar, {
+            $landscape: {
+                default: {
+                    display: 'none'
+                }
+            },
+
+            $portrait: {
+                default: {
+                    $classic: true,
+                    display: 'block',
+                    position: 'fixed',
+                    left: '0',
+                    top: '0',
+                    width: '100vw',
+                    height: '64px',
+                    background: CSS.Global.root().color.gradient.disable
+                    //'background': 'radial-gradient(at -10% -10%, rgba(30, 30, 30, 0.75), rgba(14, 14, 14, 1))'
+                }
+            }
+        })
+
 
         await create_profile();
 
-        create_switch_lang()
+        setTimeout(() => {
+            create_recent_work()
+            device_orientation()
+        }, 250)
 
-        setTimeout(async () => {
-            await create_recent_work()
-        }, 500)
+        await create_menu();
 
-        await create_whatIdo()
-
-        create_drawer();
-
-        El.Attr(El.create('label', El.id('content')), {
-            id: 'commission'
-        }).innerHTML = {
-            en: 'Open to commission! Hire me :)',
-            pt: 'Aberto para pedidos! Contrate me :)'
-        } [localStorage.getItem('lang')]
+        await create_drawer()
     }
 
-    function create_drawer() {
-        home.el.drawer = new Components.window.Drawer({
-            parent: El.id('content'),
-            onclose: () => {
-                home.el.drawer.hide();
-            },
-            id: 'drawer'
-        })
+    // |-----------------------------------------------------------------------
+    // | [create]
+    // | Create elements
+    // |-----------------------------------------------------------------------
 
-
-
-        home.el.profile.skills.button.onclick = async () => {
-            home.el.drawer.configure({
-                header: {
-                    en: 'My Skills',
-                    pt: 'Minhas Habilidades'
-                } [localStorage.getItem('lang')],
-                body: await Page.text('myskills.html'),
-                onclose: () => {
-                    home.el.drawer.hide();
-                }
-            }).refresh().open()
-        }
-    }
-
-    /**
-     * Create my profile pic * little about me 
-     */
     async function create_profile() {
-        home.el.profile = new Components.opt.Profile({
-            parent: El.id('content')
+
+        scene.el.profile = {};
+
+        // container
+        scene.el.profile.container = El.Attr(El.create('section', El.id('content')), {
+            id: 'profile_container'
         })
 
+        CSS.attach(scene.el.profile.container, {
+            $landscape: {
+                default: {
+                    $classic: true,
+                    display: 'grid',
+                    'grid-auto-columns': '196px',
+                    'grid-auto-rows': `max-content`,
+                    'grid-gap': '1rem',
+                    'justify-contents': 'center',
+                    'justify-items': 'center',
+                    padding: '1em',
+                    'justify-self': 'center',
+                    'margin-top': '-2em'
+                }
+            }
+        })
+
+        // cover picture
+        scene.el.profile.cover = El.Attr(El.create('img', scene.el.profile.container), {
+            src: Route.Main.getItem('img')('michael.png'),
+            alt: 'profile_picture'
+        })
+
+        CSS.attach(scene.el.profile.cover, {
+            $landscape: {
+                default: {
+                    $classic: true,
+                    display: 'block',
+                    width: CSS.metric(128),
+                    height: CSS.metric(128),
+                    'border-radius': '50%',
+                    'object-fit': 'cover',
+                    padding: '.5em'
+                }
+            },
+
+            $portrait: {
+                default: {
+                    width: CSS.metric(Utils.aspect(128, true)),
+                    height: CSS.metric(Utils.aspect(128, true)),
+                }
+            }
+        })
+
+        // social media
+        scene.el.profile.social = new Components.select.Nav({
+            parent: scene.el.profile.container,
+
+            style: {
+                $landscape: {
+                    default: {
+                        $classic: true,
+                        display: 'grid',
+                        'grid-template-columns': 'repeat(5, 28px)',
+                        'grid-auto-rows': 'auto',
+                        'grid-gap': '.5em',
+                        'justify-content': 'center',
+                        'justify-self': 'center',
+                        'justify-items': 'center'
+                    }
+                }
+            },
+
+            itemStyleProperty: 'styleIcon',
+            itemStyle: {
+                $landscape: {
+                    default: {
+                        $classic: true,
+                        display: 'block',
+                        width: '24px',
+                        'object-fit': 'cover',
+                        cursor: 'pointer',
+                        'justify-self': 'center !important',
+
+                        $hover: {
+                            $classic: true,
+                            'animation': 'opacity-pingpong var(--animation-duration-long) infinite ease-in-out',
+                        }
+                    }
+                }
+            },
+
+            items: [{
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('icon')('behance.png'),
+                    alt: 'behance',
+                    onclick: () => {
+                        El.to('https://www.behance.net/daxsoft')
+                    }
+                },
+                {
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('icon')('instagram.png'),
+                    alt: 'instagram',
+                    onclick: () => {
+                        El.to('https://www.instagram.com/vorlefan/')
+                    }
+                },
+                {
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('icon')('github.png'),
+                    alt: 'github',
+                    onclick: () => {
+                        El.to('https://github.com/DaxSoft')
+                    }
+                },
+                {
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('icon')('spotify.png'),
+                    alt: 'spotify',
+                    onclick: () => {
+                        El.to("https://open.spotify.com/user/8btt9iyhho52rxvtd53b8x3mi?si=MXwEmEEsRD-mNi3Eq_hmgA")
+                    }
+                },
+                {
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('icon')('email.png'),
+                    alt: 'email',
+                    onclick: () => {
+                        El.to("mailto:dax-soft@live.com")
+                    }
+                },
+            ]
+        })
+
+        // text about me
+        scene.el.profile.text = El.Attr(El.create('p', scene.el.profile.container), {
+
+        })
+
+        CSS.attach(scene.el.profile.text, {
+            $landscape: {
+                default: {
+                    $classic: true,
+                    'font-size': '.8rem',
+                    'text-align': 'center',
+                    'padding': '.25em 1em'
+                }
+            },
+            $portrait: {
+                default: {
+                    $classic: true,
+
+                    'font-size': '.7rem',
+                    'text-align': 'center',
+                    'padding': '.25em 1em'
+                }
+            }
+        })
+
+        scene.el.profile.text.innerHTML = await Route.Main.getItem('text')('author-about.txt')
 
     }
 
-    /**
-     * Switch the language to
-     */
-    function create_switch_lang() {
-        home.el.lang = new Components.opt.Lang();
-    }
-
-    /**
-     * What I do
-     */
-    async function create_whatIdo() {
-        // section
-        El.Attr(El.create('section', El.id('content')), {
-            id: 'what_do'
-        })
-        // text
-        home.el.what_doText = El.Attr(El.create('div', El.id('what_do')), {
-
-        })
-        home.el.what_doText.innerHTML = await Page.text('whatdo.html')
-    }
-
-    /**
-     * Recent works
-     */
     async function create_recent_work() {
-        home.el.recent = {};
 
-        El.Attr(El.create('section', El.id('content')), {
-            id: 'recent_work'
+        scene.el.workContainer = El.create('section', El.id('content'))
+        CSS.attach(scene.el.workContainer, {
+            $landscape: {
+                default: {
+                    $classic: true,
+
+                    'justify-self': 'center',
+                    'padding': '2em'
+                }
+            },
         })
 
-        await create_rsara();
+        scene.el.workRecent = new Components.select.Nav({
 
-        await create_rimmersion()
+            parent: scene.el.workContainer,
+            id: 'recent-work',
+            class: '',
 
-        home.el.recent.cards = El.interactChild(El.id('recent_work'), (children, index, childrens, size) => {
+            style: {
+                $landscape: {
+                    default: {
+                        $classic: true,
 
-            children.setAttribute('index', index);
+                        display: 'grid',
+                        'grid-template-columns': 'repeat(2, max-content) !important',
+                        'grid-auto-rows': 'max-content',
+                        'grid-auto-flow': 'auto',
+                        'grid-gap': '1em',
+                        'justify-self': 'center',
+                        'justify-items': 'center',
+                        'justify-content': 'center'
+                    }
+                },
 
-            if ((index === size - 1)) El.addClass(children, 'recent_highlight')
-        })
+                $portrait: {
+                    default: {
+                        $classic: true,
 
-        home.el.recent.index = home.el.recent.cards.length - 1;
+                        'display': 'grid',
+                        'grid-auto-flow': 'row',
+                        'grid-auto-columns': 'max-content',
+                        'grid-gap': '1em',
+                        'justify-self': 'center',
+                        'justify-items': 'center',
+                    }
+                }
+            },
 
+            itemStyleProperty: 'styleIcon',
+            itemStyle: {
+                $landscape: {
+                    default: {
+                        $classic: true,
 
+                        width: '356px',
+                        height: '226px',
+                        display: 'block',
+                        'object-fit': 'cover',
+                        cursor: 'pointer',
 
-        await create_predr()
+                        $hover: {
+                            $classic: true,
 
-        await create_nextr()
-    }
-
-    async function create_rsara() {
-        // sara-costureira
-        home.el.recent.sara = new Components.card.Basic({
-            parent: El.id('recent_work'),
-            header: 'Sara Costureira',
-            body: await Page.text('work.sara_costureira.html'),
-            id: 'sara_costureira_card',
-            theme: 'card-standard card_s1'
-        })
-
-        home.el.recent.sara.details = function () {
-            Components.notification.Create({
-                label: 'Sara Costureira',
-                icon: 'logo-sc_small.png',
-                time: 4000,
-                components: [{
-                        component: 'button-basic',
-                        class: 'btn-white',
-                        label: 'Site',
-                        onclick: function () {
-                            El.Attr(El.create('a'), {
-                                href: 'https://saracostureira.com.br/'
-                            }).click()
-                            //document.body.removeChild(El.id('temp-link'));
-                            //this._popup.destroy(true)
-                        }
-                    },
-                    {
-                        component: 'button-basic',
-                        class: 'btn-white',
-                        label: {
-                            en: 'Details',
-                            pt: 'Detalhes'
-                        } [localStorage.getItem('lang')],
-                        onclick: function () {
-                            El.Attr(El.create('a'), {
-                                href: '../portfolio/sara_costureira.html'
-                            }).click()
-                            //document.body.removeChild(El.id('temp-link'));
-                            //this._popup.destroy(true)
-                        }
-                    },
-                    {
-                        component: 'button-basic',
-                        class: 'btn-white',
-                        label: '&times;',
-                        onclick: function () {
-                            this._popup.destroy(true)
+                            animation: 'short-press var(--animation-duration-long) forwards ease-in'
                         }
                     }
-                ]
-            })
-        }
+                }
+            },
 
+            items: [{
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('img')('work/sara_costureira/2.png'),
+                    alt: 'sara_costureira',
+                    onclick: () => {
+                        Components.popup.Close()
 
-    }
+                        Components.popup.Create({
 
-    async function create_rimmersion() {
-        // immersion
-        home.el.recent.immersion = new Components.card.Basic({
-            parent: El.id('recent_work'),
-            header: 'Immersion Plugin Package',
-            body: await Page.text('work.immersion_plugin.html'),
-            id: 'immersion_card',
-            theme: 'card-standard card_s1'
-        })
+                            icon: Route.Main.getItem('icon')('logo-sc_small.png'),
+                            label: 'Sara Costureira',
+                            time: 4000,
 
-        home.el.recent.immersion.details = function () {
-            Components.notification.Create({
-                label: 'Immersion Plugin Package',
-                icon: 'rpgmakermv.png',
-                time: 4000,
-                components: [{
-                        component: 'button-basic',
-                        class: 'btn-white',
-                        label: {
-                            en: 'Details',
-                            pt: 'Detalhes'
-                        } [localStorage.getItem('lang')],
-                        onclick: function () {
-                            El.Attr(El.create('a'), {
-                                href: '../rpgmaker/immersion_plugin.html'
-                            }).click()
-                        }
-                    },
-                    {
-                        component: 'button-basic',
-                        class: 'btn-white',
-                        label: 'RPG Maker Forum',
-                        onclick: function() {
-                            El.Attr(El.create('a'), {
-                                href: 'https://forums.rpgmakerweb.com/index.php?threads/immersion-0-2-3-time-cycle-period.109262/'
-                            }).click()
-                        }
-                    },
-                    {
-                        component: 'button-basic',
-                        class: 'btn-white',
-                        label: '&times;',
-                        onclick: function () {
-                            this._popup.destroy(true)
-                        }
+                            components: [{
+                                    component: 'button',
+                                    class: 'btn-white',
+                                    label: 'Study Case',
+                                    onclick: () => {
+                                        Components.alert.Create({
+                                            label: 'It is under development :)'
+                                        })
+                                    },
+                                    color: CSS.Global.root().color.system.error
+                                },
+                                {
+                                    component: 'button',
+                                    class: 'btn-white',
+                                    label: 'Website',
+                                    onclick: () => {
+                                        El.to('http://saracostureira.com.br/')
+                                    },
+                                    color: CSS.Global.root().color.neutral.black
+                                }
+                            ]
+                        })
                     }
-                ]
-            })
-        }
+                },
+                {
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('img')('work/immersion_plugin/gl_ls_1.png'),
+                    alt: 'immersion_plugin',
+                    onclick: () => {
+                        Components.popup.Close()
+
+                        Components.popup.Create({
+
+                            icon: Route.Main.getItem('icon')('rpgmakermv.png'),
+                            label: 'Immersion Plugin',
+                            time: 4000,
+
+                            components: [{
+                                component: 'button',
+                                class: 'btn-white',
+                                label: 'Details',
+                                onclick: () => {
+                                    Route.Main.to('home', 'rpgmaker/immersion_plugin.html')
+                                    //El.to(`${Route.Main.get('home').path}/rpgmaker/immersion_plugin.html`)
+                                },
+                                color: CSS.Global.root().color.neutral.black
+                            }]
+                        })
+                    }
+                }
+            ]
+
+        })
     }
 
-    async function create_predr() {
-        home.el.recent.pred = El.Attr(El.create('span', El.id('recent_work')), {
-            class: 'recent_work_arrow',
-            name: 'arrow_recent'
+    async function create_menu() {
+        scene.el.menu = new Components.select.Nav({
+            id: 'menu',
+            class: '',
+
+            style: {
+                $landscape: {
+                    default: {
+                        $classic: true,
+
+                        position: 'absolute',
+                        right: '6em',
+                        top: '2em',
+                        display: 'grid',
+                        'grid-template-columns': 'min-content',
+                        'grid-auto-rows': 'min-content',
+                        'grid-auto-flow': 'column',
+                        'grid-gap': '1rem',
+                        'justify-items': 'center'
+                    }
+                },
+
+                $portrait: {
+                    default: {
+                        $classic: true,
+
+                        position: 'absolute',
+                        right: '2em',
+                        top: '1em',
+                        display: 'grid',
+                        'grid-template-columns': 'min-content',
+                        'grid-auto-rows': 'min-content',
+                        'grid-auto-flow': 'column',
+                        'grid-gap': '.5rem',
+                        'justify-items': 'center'
+                    }
+                }
+            },
+
+            itemStyle: {
+                $landscape: {
+                    default: {
+                        $classic: true,
+
+                        border: 'none',
+                        'font-size': '.75rem'
+                    }
+                },
+
+                $portrait: {
+                    default: {
+                        'font-size': '.65rem'
+                    }
+                }
+            },
+
+            items: [{
+                    component: 'button',
+                    label: {
+                        en: 'About',
+                        pt: 'Sobre'
+                    } [localStorage.getItem('lang')],
+                    onclick: async () => {
+                        scene.el.drawer.configure({
+                            // header: {en: 'About myself', pt: 'Sobre mim'}[localStorage.getItem('lang')],
+                            header: [{
+                                component: 'button',
+                                class: 'btn-white',
+                                label: {
+                                    en: 'About &times;',
+                                    pt: 'Sobre &times;'
+                                } [localStorage.getItem('lang')],
+                                onclick: () => {
+                                    scene.el.drawer.hide()
+                                },
+                                color: CSS.Global.root().color.neutral.black
+                            }],
+                            class: 'drawer',
+                            body: await Route.Main.getItem('text')('whatdo.html')
+                        }).refresh().open()
+                    }
+                },
+                {
+                    component: 'button',
+                    label: {
+                        en: 'Skills',
+                        pt: 'Habilidades'
+                    } [localStorage.getItem('lang')],
+                    onclick: async () => {
+                        scene.el.drawer.configure({
+                            // header: {en: 'About myself', pt: 'Sobre mim'}[localStorage.getItem('lang')],
+                            header: [{
+                                component: 'button',
+                                class: 'btn-white',
+                                label: {
+                                    en: 'Skills &times;',
+                                    pt: 'Habilidades &times;'
+                                } [localStorage.getItem('lang')],
+                                onclick: () => {
+                                    scene.el.drawer.hide()
+                                },
+                                color: CSS.Global.root().color.neutral.black
+                            }],
+                            class: 'drawer',
+                            body: await Route.Main.getItem('text')('myskills.html')
+                        }).refresh().open()
+                    }
+                },
+                {
+                    component: 'button', label: 'Blog', color: CSS.Global.root().color.theme.primary,
+                    onclick: () => {
+                        Components.alert.Create({
+                            icon: Route.Main.getItem('icon')('info.png'),
+                            label: ({en: 'For while, the blog is empty!', pt: 'Por enquanto, o blog está vazio!'})[localStorage.getItem('lang')],
+                            duration: 3500,
+                            position: 'topCenter'
+                        })
+                    }
+                },
+                {
+                    component: 'button', label: ({en: 'Resources', pt: 'Recursos'})[localStorage.getItem('lang')],
+                    onclick: () => {
+                        Components.popup.Create({
+                            label:  ({en: "... Empty by now :(", pt: '... Vazio, por enquanto'})[localStorage.getItem('lang')],
+                            time: 4000,
+                            components: [
+                                {
+                                    component: 'button', label: '&RightArrow; Github', class: 'btn-white',
+                                    color: CSS.Global.root().color.neutral.black,
+                                    onclick: function () {
+                                        El.to('https://github.com/DaxSoft')
+                                    }
+                                },
+                                {
+                                    component: 'button', label: '&times;', class: 'btn-white',
+                                    color: CSS.Global.root().color.system.error,
+                                    onclick: function () {
+                                        Components.popup.Close();
+                                    }
+                                }
+                            ]
+                        })
+                        //Route.Main.to('home', 'resources.html')
+                    }
+                },
+                {
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('icon')('usa.png'),
+                    styleIcon: {
+                        $landscape: {
+                            default: {
+                                width: '24px',
+                                'object-fit': 'cover',
+                                'cursor': 'pointer'
+                            }
+                        }
+                    },
+                    alt: 'usa',
+                    onclick: () => {
+                        localStorage.setItem('lang', 'en')
+                        document.location.reload();
+                    }
+                },
+                {
+                    component: 'icon',
+                    class: '',
+                    src: Route.Main.getItem('icon')('brazil.png'),
+                    styleIcon: {
+                        $landscape: {
+                            default: {
+                                width: '24px',
+                                'object-fit': 'cover',
+                                'cursor': 'pointer'
+                            }
+                        }
+                    },
+                    alt: 'usa',
+                    onclick: () => {
+                        localStorage.setItem('lang', 'pt')
+                        document.location.reload();
+                    }
+                }
+            ]
         })
 
-        home.el.recent.pred.innerHTML = '&UpArrow;'
+    }
 
-        home.el.recent.pred.onclick = () => {
-            home.el.recent.index--;
-            home.el.recent.index %= home.el.recent.cards.length;
+    async function create_drawer() {
+        scene.el.drawer = new Components.window.Drawer({
+            class: 'drawer',
 
-            home.el.recent.cards.map(children => {
-                if (+children.getAttribute('index') === home.el.recent.index) {
-                    El.addClass(children, 'recent_highlight')
-                } else {
-                    El.removeClass(children, 'recent_highlight')
+            style: {
+                $landscape: {
+                    default: {
+                        $classic: true,
+
+                        left: '1em',
+                        top: '1em',
+                        width: '40%',
+                        height: '85vh'
+                    }
+                },
+
+                $portrait: {
+                    default: {
+                        $classic: true,
+
+                        left: '1em',
+                        top: '1em',
+                        width: '80%',
+                        height: '85vh'
+                    }
                 }
-            })
+            },
+
+            onclose: () => {
+                scene.el.drawer.hide();
+            }
+
+        }).hide()
+
+        El.addClass(scene.el.drawer.control, 'nested')
+    }
+
+    // |-----------------------------------------------------------------------
+    // | Check out layout
+    // |-----------------------------------------------------------------------
+    document.body.onresize = async function () {
+
+        device_orientation();
+    }
+
+    function device_orientation() {
+        Utils.device_orientation();
+
+        if (Utils.screen.current === 'portrait' && scene.isPortrait === false) {
+            scene.isPortrait = true;
+            El.addClass(El.id('content'), 'portrait')
+            cssUpdate()
+            document.body.style.overflowY = 'visible'
+        } else if (scene.isPortrait && Utils.screen.current === 'landscape') {
+            scene.isPortrait = false;
+            El.removeClass(El.id('content'), 'portrait')
+            cssUpdate()
+            document.body.style.overflowY = 'hidden'
         }
     }
 
-    async function create_nextr() {
-        home.el.recent.next = El.Attr(El.create('span', El.id('recent_work')), {
-            class: 'recent_work_arrow',
-            style: `
-                top: 2em;
-            `,
-            name: 'arrow_recent'
+    function cssUpdate() {
+        scene.el.profile.container.css.render_mode()
+        scene.el.profile.cover.css.render_mode()
+        scene.el.profile.text.css.render_mode()
+        scene.el.workContainer.css.render_mode()
+        scene.el.workRecent.container.css.render_mode()
+        scene.el.menuBar.css.render_mode()
+        scene.el.drawer.render_mode();
+
+        scene.el.menu.render_mode()
+    }
+
+    scene.infoSkill = function (tag) {
+        Components.alert.Close()
+        Components.alert.Create({
+            label: ({en: 'W.I.P!', pt: 'W.I.P!'})[localStorage.getItem('lang')],
+            position: 'topCenter'
         })
-
-        home.el.recent.next.innerHTML = '&DownArrow;'
-
-        home.el.recent.next.onclick = () => {
-            home.el.recent.index++;
-            home.el.recent.index %= home.el.recent.cards.length;
-
-            home.el.recent.cards.map(children => {
-                if (+children.getAttribute('index') === home.el.recent.index) {
-                    El.addClass(children, 'recent_highlight')
-                } else {
-                    El.removeClass(children, 'recent_highlight')
-                }
-            })
-        }
-
     }
 
-
-    home.infoSkill = function (tag) {
-        Components.alert.closeAll()
-        switch (tag) {
-            case 'ai':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'Adobe Illustrator: Vector & Print Design',
-                        pt: 'Adobe Illustrator: Vetores & Print Design'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'psd':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'Adobe Photoshop: UI Elements & Drawing',
-                        pt: 'Adobe Photoshop: Elementos UI & Desenhos'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'rpgmakermv':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'RPG Maker MV: Engine to create games',
-                        pt: 'RPG Maker MV: Engine para criar jogos'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'vscode':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'Visual Studio Code: Gorgerous IDE to code!',
-                        pt: 'Visual Studio Code: IDE maravilhosa para programar!'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'laragon':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'Laragon: To locally test my web projects!',
-                        pt: 'Laragon: Para testar localmente meus projetos web!'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'evernote':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'Evernote: To write & plan my projects and ideas',
-                        pt: 'Evernote: Para escrever & planejar meus projetos e ideias'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'javascript':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'JavaScript: To paint my ideas and make the dreams come to true',
-                        pt: 'JavaScript: Pintar minhas ideias e fazer os sonhos se tornarem reais'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'html':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'HTML5: To create the overall concept of the website & electronjs programs',
-                        pt: 'HTML5: Criar os conceitos gerais dos website & programas electronjs'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'css':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'CSS3: To make up everything beautiful!',
-                        pt: 'CSS3: Para que tudo fique bonito!'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'mongodb':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'MongoDB: Database system to keep up the datas of your project',
-                        pt: 'MongoDB: Sistema de banco de dados para manter os dados de seu projeto'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'fastify':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'Fastify: Framework to create a fast back end (server side) solution',
-                        pt: 'Fastify: Framework para criar uma solução rápida no back end'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'node':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'NodeJS: To create the server of your project',
-                        pt: 'NodeJS: Criar o lado do servidor de seu projeto'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'pixijs':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'PixiJS: To handle with sprites, videos and audio for Web projects',
-                        pt: 'PixiJS: Manusear sprites, vídeos e áudios para projetos Web'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            case 'electron':
-                new Components.alert.Geral({
-                    duration: 2000,
-                    label: ({
-                        en: 'ElectronJS: Framework to create multiplatform apps with JavaScript!',
-                        pt: 'ElectronJS: Framework para criar aplicativos multiplataformas com JavaScript!'
-                    })[localStorage.getItem('lang')],
-                    position: 'bottomRight'
-                })
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    // start out
+    // |-----------------------------------------------------------------------
+    // | Start to
+    // |-----------------------------------------------------------------------
     Promise.resolve()
         .then(start);
-}(Home);
+}(Scene);
