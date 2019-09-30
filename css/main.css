@@ -72,6 +72,7 @@
     --color-radial-background-3: radial-gradient(at 50% 100%, rgba(26, 14, 15, 0.75), rgba(14, 14, 14, 1));
     --color-radial-background-4: radial-gradient(at -10% -10%, rgba(30, 30, 30, 0.75), rgba(14, 14, 14, 1));
     --color-radial-reverse: radial-gradient(at -20% -20%, rgba(238, 238, 238, 0.9), at 50% 50% rgba(200, 200, 200, 1));
+    --color-box-shadow: rgba(12,12,12,.4);
 
     /*
      * [animation]
@@ -135,10 +136,9 @@ h1 {
     color: var(--color-theme-highlight);
     font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 4px;
     text-align: center;
     font-weight: 500;
-    border-bottom: solid 1px var(--color-theme-highlight);
     padding-top: 2em;
     padding-bottom: .5em;
 }
@@ -170,9 +170,10 @@ img {
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
-
+    width: 4px;
+    height: 4px;
 }
+
 
 ::-webkit-scrollbar-thumb {
     background: var(--color-system-interactive);
@@ -245,6 +246,27 @@ h3 {
     margin: 0;
 }
 
+#content {
+    display: grid;
+    max-width: 100%;
+    max-height: 100%;
+    grid-template-columns: 1fr 3fr;
+    grid-auto-rows: max-content;
+    justify-content: left;
+    justify-self: center;
+    margin-top: 5em;
+}
+
+#content.portrait {
+    width: auto;
+    grid-template-columns: max-content;
+    grid-auto-rows: max-content;
+    grid-auto-flow: row !important;
+    justify-items: center !important;
+    justify-self: center !important;
+    justify-content: center !important;
+}
+
 /* =============================================================================================================
     [:text] 
 =============================================================================================================  */
@@ -263,6 +285,76 @@ h3 {
     font-weight: var(--text-subtitle-weight);
     font-family: var(--text-subtitle-family);
     letter-spacing: 2px;
+}
+
+/* =============================================================================================================
+    [:select] 
+=============================================================================================================  */
+
+.select-standard {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-rows: min-content;
+    grid-gap: 1rem;
+    grid-auto-flow: column;
+    justify-content: center;
+    padding: .25em;
+    
+    
+}
+
+.select-standard > img {
+    display: block;
+    width: 28px;
+    object-fit: cover;
+    justify-self: center;
+}
+
+
+.dropdown-standard {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-rows: min-content;
+    grid-gap: .5rem;
+    background-color: var(--color-neutral-lighter);
+    border-radius: 6px;
+    /* offset-x | offset-y | blur-radius | spread-radius | color */
+    box-shadow: 1px 2px 2px 2px  var(--color-box-shadow);
+    justify-items: center;
+    justify-content: center;
+    color: var(--color-neutral-dark);
+}
+
+.dropdown-standard_option {
+    display: block;
+    padding: .5rem;
+    transition: all .3s ease-in;
+    cursor: pointer;
+    width: 100% !important;
+    max-width: 90%;
+    left: .5rem;
+}
+
+.dropdown-standard_option:hover,
+.dropdown-standard_option:active {
+    color: var(--color-system-interactive);
+}
+
+.nav {
+    display: grid; 
+    grid-auto-columns: max-content;
+    grid-auto-rows: min-content;
+    grid-auto-flow: column;
+    grid-gap: 1rem;
+    justify-items: center;
+    justify-self: center;
+    padding: 1em;
+}
+
+.nav-portrait {
+    grid-auto-columns: min-content !important;
+    grid-auto-rows: max-content !important;
+    grid-auto-flow: row !important;
 }
 
 /* =============================================================================================================
@@ -320,16 +412,23 @@ h3 {
 }
 
 .btn-icon>img {
-    display: inline-block;
+    display: block;
     width: 32px;
     object-fit: cover;
     cursor: pointer;
+    justify-self: center !important;
 }
 
 .btn-icon:hover {
-    background-color: var(--color-neutral-secondary);
+    background-color: var(--color-neutral-primary);
     animation: brightness-pingpong var(--animation-duration-normal) forwards ease-in;
+    
 }
+
+/* =============================================================================================================
+    [:tooltip] 
+=============================================================================================================  */
+
 
 /* =============================================================================================================
     [:drawer] 
@@ -343,7 +442,7 @@ h3 {
 .drawer {
     display: grid;
     grid-auto-columns: auto;
-    grid-template-rows: 2em auto 2em;
+    grid-template-rows: 2em max-content 2em;
     grid-gap: 1rem;
     position: fixed;
     padding: .5em;
@@ -376,6 +475,8 @@ h3 {
 
 .drawer>drawer_body {
     padding: .5em;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .drawer>drawer_body>* {
@@ -432,6 +533,17 @@ h3 {
     grid-template-columns: repeat(3, 216px);
     grid-auto-rows: 216px;
     grid-gap: 3em;
+    justify-content: center;
+    justify-self: center;
+}
+
+.book.portrait {
+    display: grid;
+    grid-template-columns: none;
+    grid-auto-columns: max-content;
+    grid-auto-rows: max-content;
+    grid-auto-flow: row;
+    grid-gap: 1em;
     justify-content: center;
     justify-self: center;
 }
@@ -596,12 +708,12 @@ h3 {
     padding: .5em;
 }
 
-#profile {
+/* #profile {
     position: fixed;
     transform: translate(-50%, -50%);
     top: 50%;
     left: 9rem;
-}
+} */
 
 .lang {
     display: grid;
@@ -665,8 +777,8 @@ h3 {
 
 .alert {
     display: grid;
-    grid-template-columns: 24px auto 24px;
-    grid-auto-rows: auto;
+    grid-template-columns: 24px max-content 24px;
+    grid-auto-rows: min-content;
     grid-auto-flow: column;
     grid-gap: 1rem;
     z-index: 999 !important;
@@ -707,7 +819,6 @@ h3 {
     font-size: .75rem;
     font-weight: 600;
     color: var(--color-neutral-dark);
-    
 }
 
 
@@ -747,6 +858,7 @@ h3 {
     grid-auto-columns: auto;
     grid-auto-rows: auto;
     grid-gap: .5rem;
+    max-width: 75%;
     justify-items: left;
 }
 
@@ -757,8 +869,8 @@ h3 {
     font-size: .7rem;
     color: var(--color-neutral-transition-secondary);
     display: grid;
-    grid-template-columns: auto auto !important;
-    grid-auto-rows: 2em;
+    grid-template-columns: max-content min-content !important;
+    grid-auto-rows: minmax(2em, min-content);
     grid-auto-flow: column;
     grid-gap: .5rem;
     justify-content: center;
@@ -774,42 +886,6 @@ h3 {
     margin: 0;
 }
 
-.todo {
-    display: grid;
-    grid-auto-columns: auto;
-    grid-auto-rows: auto;
-    grid-gap: .5rem;
-    justify-items: left;
-}
-
-.todo > div {
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--color-neutral-secondary);
-    font-size: .7rem;
-    color: var(--color-neutral-transition-secondary);
-    display: grid;
-    grid-template-columns: 1em auto auto !important;
-    grid-auto-rows: auto;
-    grid-auto-flow: column;
-    grid-gap: .5rem;
-    justify-content: center;
-    justify-items: center;
-    padding: .5em;
-    background-color: var(--color-neutral-primary);
-    border-radius: 6px;
-    padding-bottom: 1em;
-}
-
-.todo > div > * {
-    justify-self: center;
-}
-
-.todo > div > p {
-    justify-self: center;
-    font-size: .8rem;
-    margin: 0;
-}
 
 .tag-info {
     border-radius: 6px;

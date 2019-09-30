@@ -1,5 +1,6 @@
 html, body {
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 
@@ -7,7 +8,7 @@ html, body {
     position: absolute;
     transform: translateX(-50%);
     display: grid;
-    grid-template-columns: 20vw 70vw;
+    grid-template-columns: max-content;
     grid-auto-rows: auto;
     padding: 1em;
     margin: 1em;
@@ -15,6 +16,24 @@ html, body {
     justify-self: center;
     top: 7em;
     left: 50%;
+}
+
+#content.portrait {
+    grid-auto-flow: row;
+    grid-template-columns: max-content;
+    grid-auto-rows: max-content;
+    left: 50%;
+    margin: 0;
+}
+
+#content.portrait > #doc {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-rows: max-content;
+    grid-gap: 1rem;
+    justify-self: center;
+    justify-items: center;
+    padding: 2em;
 }
 
 #table_content {
@@ -48,4 +67,83 @@ html, body {
 
 #gallery {
     justify-self: center;
+}
+
+
+
+.tech_cmd {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-rows: min-content;
+    grid-gap: .5rem;
+    max-width: 80vw;
+    padding: 1em;
+    background-color: var(--color-neutral-primary);
+    border-radius: 6px;
+}
+
+.tech_cmd > div {
+    display: grid;
+    grid-template-columns: min-content max-content;
+    grid-auto-rows: min-content;
+    grid-gap: 1rem;
+    justify-self: left;
+    max-width: 80vw;
+    overflow-x: scroll;
+}
+
+.tech_cmd > div > * {
+    font-size: .7rem;
+    text-align: center;
+    max-width: 80vw;
+}
+
+.tech_cmd > div > *:first-child {
+    font-size: .6rem;
+    text-transform: uppercase;
+    color: var(--color-system-information);
+}
+
+
+
+
+
+.todo {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-rows: max-content;
+    grid-gap: .5rem;
+    justify-items: left;
+}
+
+.todo > div {
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-neutral-secondary);
+    font-size: .7rem;
+    color: var(--color-neutral-transition-secondary);
+    display: grid;
+    grid-template-columns: 16px max-content min-content !important;
+    grid-auto-rows: auto;
+    grid-auto-flow: column;
+    grid-gap: .5rem;
+    justify-content: center;
+    justify-items: center;
+    padding: .5em;
+    background-color: var(--color-neutral-primary);
+    border-radius: 6px;
+    padding-bottom: 1em;
+    max-width: 90vw;
+}
+
+.todo > div > * {
+    /* max-width: 80%; */
+    justify-self: center;
+}
+
+.todo > div > * > p {
+    justify-self: center;
+    font-size: .8rem;
+    margin: 0;
+    /* max-width: 90%; */
 }
