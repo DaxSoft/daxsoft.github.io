@@ -1,0 +1,38 @@
+{
+    "name": "daxsoft.portfolio",
+    "version": "1.2.3",
+    "author": {
+        "name": "Michael Willian Santos",
+        "email": "dax-soft@live.com"
+    },
+    "main": "index.js",
+    "license": "MIT",
+    "dependencies": {
+        "@loadable/component": "^5.12.0",
+        "@material-ui/core": "^4.9.10",
+        "@material-ui/icons": "^4.9.1",
+        "@vorlefan/react-hooks": "^1.1.0",
+        "isomorphic-unfetch": "^3.0.0",
+        "next": "^9.3.4",
+        "prop-types": "^15.7.2",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-indiana-drag-scroll": "^1.6.1",
+        "react-markdown-renderer": "^1.4.0"
+    },
+    "devDependencies": {
+        "babel-plugin-transform-define": "^2.0.0",
+        "gh-pages": "^2.2.0",
+        "rimraf": "^3.0.2"
+    },
+    "scripts": {
+        "dev": "next",
+        "build": "next build",
+        "start": "next start",
+        "export": "next export",
+        "deploy": "rimraf out && next build && next export",
+        "ghpages": "node gh_pages.js",
+        "regula": "node .regula/src/start/index.js",
+        "@vorlefan/behance": "node .regula/src/command/behance_project/src/index.js"
+    }
+}
