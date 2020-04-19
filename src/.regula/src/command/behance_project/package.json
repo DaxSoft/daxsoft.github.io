@@ -1,0 +1,15 @@
+{
+    "name": "behance_project",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "license": "MIT",
+    "dependencies": {
+        "chalk": "^4.0.0",
+        "clear": "^0.1.0",
+        "puppeteer": "^3.0.0"
+    },
+    "scripts": {
+        "global": "node src/global.js",
+        "start": "node src/index.js"
+    }
+}
